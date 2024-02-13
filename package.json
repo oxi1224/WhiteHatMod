@@ -1,0 +1,41 @@
+{
+  "name": "whitehatmod",
+  "version": "1.0.0",
+  "main": "dist/src/index.js",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "rimraf dist && npx tsc",
+    "start": "build && node ./dist/src/index.js",
+    "lint": "prettier --plugin=prettier-plugin-organize-imports --check . && eslint .",
+    "format": "prettier --plugin=prettier-plugin-organize-imports --write .",
+    "test": "node --enable-source-maps --test dist/test"
+  },
+  "imports": {
+    "#lib": {
+      "default": "./src/lib/index.js"
+    },
+    "#util": {
+      "default": "./src/util/index.js"
+    },
+    "#src/*": {
+      "default": "./src/*"
+    }
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.6",
+    "@typescript-eslint/eslint-plugin": "^7.0.1",
+    "@typescript-eslint/parser": "^7.0.1",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.2.5",
+    "prettier-plugin-organize-imports": "^3.2.4",
+    "rimraf": "^5.0.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "discord.js": "^14.14.1"
+  },
+  "packageManager": "yarn@4.1.0"
+}
