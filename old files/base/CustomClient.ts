@@ -1,8 +1,8 @@
-import { Client, ClientOptions, Snowflake, UserResolvable } from 'discord.js';
-import { BaseCommandHandler } from './command/CommandHandler.js';
-import { BaseTaskHandler } from './task/TaskHandler.js';
-import { CustomClientOptions } from './lib/types.js';
-import { BaseListenerHandler } from './listener/ListenerHandler.js';
+import { Client, ClientOptions, Snowflake, UserResolvable } from "discord.js";
+import { BaseCommandHandler } from "./command/CommandHandler.js";
+import { CustomClientOptions } from "./lib/types.js";
+import { BaseListenerHandler } from "./listener/ListenerHandler.js";
+import { BaseTaskHandler } from "./task/TaskHandler.js";
 
 export class CustomClient extends Client {
   /**
@@ -19,7 +19,7 @@ export class CustomClient extends Client {
    * The task handler of the client.
    */
   public taskHandler?: BaseTaskHandler;
-  
+
   /**
    * The listener handler of the client.
    */
@@ -27,11 +27,9 @@ export class CustomClient extends Client {
 
   /**
    * @param clientOptions - Options for the Discord.js Client class
-   * @param options - Options for the custom client. 
+   * @param options - Options for the custom client.
    */
-  constructor(clientOptions: ClientOptions, {
-    owners = [],
-  }: CustomClientOptions) {
+  constructor(clientOptions: ClientOptions, { owners = [] }: CustomClientOptions) {
     super(clientOptions);
     this.owners = owners;
   }
@@ -43,6 +41,6 @@ export class CustomClient extends Client {
    */
   public isOwner(user: UserResolvable): boolean {
     const id = this.users.resolveId(user) as Snowflake;
-    return this.owners.includes(id ?? '');
+    return this.owners.includes(id ?? "");
   }
 }

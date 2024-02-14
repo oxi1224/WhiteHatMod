@@ -1,12 +1,11 @@
 import { ApplicationCommandOptionType } from "discord-api-types/v10";
-import { BaseCommand } from "./Command.js";
 import type { CommandArgument, CommandArgumentType, InteractionChoice } from "../lib/types.js";
+import { BaseCommand } from "./Command.js";
 
 /**
  * Represents a command argument
  */
 export class Argument {
-
   /**
    * The command this argument belongs to.
    */
@@ -56,22 +55,25 @@ export class Argument {
    * @param command - The command this argument belongs to.
    * @param options - Options.
    */
-  constructor(command: BaseCommand, {
-    id,
-    type,
-    required = false,
-    slashType,
-    description = '',
-    length = Infinity,
-    options,
-  }: CommandArgument) {
+  constructor(
+    command: BaseCommand,
+    {
+      id,
+      type,
+      required = false,
+      slashType,
+      description = "",
+      length = Infinity,
+      options
+    }: CommandArgument
+  ) {
     this.command = command;
     this.id = id;
     this.type = type;
     this.required = required;
     this.slashType = slashType;
     this.description = description;
-    this.index = command.args.findIndex(arg => arg.id === this.id);
+    this.index = command.args.findIndex((arg) => arg.id === this.id);
     this.length = length;
     this.options = options;
   }

@@ -5,8 +5,9 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build": "rimraf dist && npx tsc",
-    "start": "build && node ./dist/src/index.js",
+    "build": "rimraf dist && yarn tsc",
+    "dev": "yarn tsc && node ./dist/src/index.js",
+    "start": "yarn build && node ./dist/src/index.js",
     "lint": "prettier --plugin=prettier-plugin-organize-imports --check . && eslint .",
     "format": "prettier --plugin=prettier-plugin-organize-imports --write .",
     "test": "node --enable-source-maps --test dist/test"
@@ -35,7 +36,8 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
-    "discord.js": "^14.14.1"
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.4.4"
   },
   "packageManager": "yarn@4.1.0"
 }

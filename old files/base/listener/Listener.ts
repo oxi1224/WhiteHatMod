@@ -1,6 +1,6 @@
-import { ListenerOptions } from '../lib/types.js';
-import { EventEmitter } from 'events';
-import { BaseListenerHandler } from './ListenerHandler.js';
+import { EventEmitter } from "events";
+import { ListenerOptions } from "../lib/types.js";
+import { BaseListenerHandler } from "./ListenerHandler.js";
 
 export abstract class BaseListener {
   /**
@@ -32,11 +32,7 @@ export abstract class BaseListener {
    * @param id - The unique id of the listener.
    * @param options - Options.
    */
-  constructor(id: string, {
-    emitter,
-    event,
-    method = 'on'
-  }: ListenerOptions) {
+  constructor(id: string, { emitter, event, method = "on" }: ListenerOptions) {
     this.id = id;
     this.emitter = emitter;
     this.event = event;
@@ -45,7 +41,7 @@ export abstract class BaseListener {
 
   /**
    * The function which gets executed on specified event.
-   * @param value - Any object which the event returns. 
+   * @param value - Any object which the event returns.
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public execute(value: unknown) {

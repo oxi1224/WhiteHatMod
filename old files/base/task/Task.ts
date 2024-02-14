@@ -19,17 +19,15 @@ export abstract class BaseTask {
 
   /**
    * @param id - Unique id of the task.
-   * @param options - Options. 
+   * @param options - Options.
    */
-  constructor(id: string, {
-    interval,
-  }: TaskOptions) {
+  constructor(id: string, { interval }: TaskOptions) {
     this.id = id;
     this.interval = interval;
   }
 
   /**
-   * The function to execute. 
+   * The function to execute.
    */
   public execute() {
     throw new Error(`Execute function empty in task ${this.id}.`);
