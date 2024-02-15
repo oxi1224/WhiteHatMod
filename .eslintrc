@@ -50,6 +50,7 @@
     "spaced-comment": "error",
     "yoda": "error",
     "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
+    // "@typescript-eslint/consistent-type-imports": 1,
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-non-null-assertion": "off"
   }

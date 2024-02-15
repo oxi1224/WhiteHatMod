@@ -21,5 +21,4 @@ client.addListener("interactionCreate", (interaction: CommandInteraction) =>
 client.login(process.env.TOKEN);
 
 // TODO - Argument parsing for both interactions and message commands
-// TODO - Add requirements and checks for them for user and bot
 // TODO - (?) Abstract client into it's own class
