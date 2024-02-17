@@ -20,5 +20,4 @@ client.addListener("interactionCreate", (interaction: CommandInteraction) =>
 
 client.login(process.env.TOKEN);
 
-// TODO - Parsing duration string into date (2 days => new Date().getTime() + 2 days);
 // TODO - (?) Abstract client into it's own class
