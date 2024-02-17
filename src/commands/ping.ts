@@ -1,5 +1,5 @@
 import { Command } from "#lib";
-import { CommandInteraction, Message } from "discord.js";
+import { CommandInteraction, EmbedBuilder, Message } from "discord.js";
 
 export class Ping extends Command {
   constructor() {
@@ -12,6 +12,13 @@ export class Ping extends Command {
   }
 
   override execute(msg: Message | CommandInteraction): void {
-    msg.reply(msg.client.ws.ping.toString() + "ms");
+    const timeDifferece = new Date().getTime() - msg.createdTimestamp;
+    const apiPing = msg.client.ws.ping;
+    const embed = new EmbedBuilder()
+      .addFields([
+        { name: 'Bot latency', value: `\`\`${Math.round(timeDifferece)}ms\`\``, inline: true },
+        { name: 'Api latency', value: `\`\`${Math.round(apiPing)}ms\`\``, inline: true }
+      ]);
+    msg.reply({ embeds: [embed] });
   }
 }

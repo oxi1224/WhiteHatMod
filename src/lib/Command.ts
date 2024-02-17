@@ -1,28 +1,5 @@
-import {
-  APIApplicationCommandOptionChoice,
-  ApplicationCommandOptionType,
-  CommandInteraction,
-  Message,
-  PermissionFlagsBits,
-} from "discord.js";
-
-export const enum ArgumentTypes {
-  User,
-  Channel,
-  Role,
-  Text,
-  Number,
-  Duration
-}
-
-export interface Argument {
-  name: string;
-  description: string;
-  required: boolean;
-  type: ArgumentTypes;
-  slashType: ApplicationCommandOptionType;
-  choices: APIApplicationCommandOptionChoice<number | string>[];
-}
+import { CommandInteraction, Message, PermissionFlagsBits, inlineCode } from "discord.js";
+import { Argument, ParsedArgs } from "./types";
 
 export interface CommandOptions {
   aliases: string[];
@@ -53,7 +30,7 @@ export abstract class Command {
 
   /** Is the command NSFW (default = false) */
   public nsfw: boolean;
-  
+
   /** Permissions needed by the user (PermissionsFlagBits) (default = []) */
   public userPerms: bigint[];
 
@@ -73,7 +50,7 @@ export abstract class Command {
       nsfw = false,
       userPerms = [],
       botPerms = [PermissionFlagsBits.SendMessages],
-      guildOnly = true,
+      guildOnly = true
     }: CommandOptions
   ) {
     this.id = name;
@@ -88,7 +65,19 @@ export abstract class Command {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public execute(msg: Message | CommandInteraction) {
-    throw new Error("Execute must be overriden");
+  public execute(msg: Message | CommandInteraction, args: ParsedArgs) {
+    throw new Error("Execute must be overriden. Command ID: " + this.id);
+  }
+
+  public preExecute(msg: Message | CommandInteraction, args: ParsedArgs): boolean {
+    for (const val of Object.values(args)) {
+      for (const arg of this.arguments) {
+        if (arg.required && val === null) {
+          msg.reply("Invalid required argument: " + inlineCode(arg.name));
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }
