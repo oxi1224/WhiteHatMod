@@ -1,7 +1,6 @@
 import { getMissingPermNames, parseDuration } from "#util";
 import {
   ApplicationCommandOptionType,
-  Client,
   Collection,
   CommandInteraction,
   Guild,
@@ -13,22 +12,41 @@ import {
   inlineCode
 } from "discord.js";
 import "dotenv/config";
+import { EventEmitter } from "events";
+import { ArgumentTypes, FlagTypes } from "../constants.js";
+import { ArgTypes, Argument, ClassConstructor, ParsedArgs } from "../types.js";
 import { Command } from "./Command.js";
-import { ArgumentTypes, FlagTypes } from "./constants.js";
-import { ArgTypes, Argument, ClassConstructor, ParsedArgs } from "./types.js";
+import { Client } from "./Client.js";
 
 const rest = new REST({ version: "10" }).setToken(process.env.TOKEN ?? "");
 
-export class CommandHandler {
+export interface CommandHandlerOptions {
+  prefix: string;
+  commandPath: string;
+  flagPrefix: string;
+}
+
+export class CommandHandler extends EventEmitter {
   public prefix: string;
   public client: Client;
+  public flagPrefix: string;
 
   private commands = new Collection<string, Command>();
   private commandExportPath: string;
-  constructor(pref: string, _client: Client, commandPath: string) {
-    this.prefix = pref;
-    this.client = _client;
-    this.commandExportPath = commandPath;
+  constructor(client: Client, options: CommandHandlerOptions) {
+    super();
+    this.client = client;
+    this.prefix = options.prefix;
+    this.commandExportPath = options.commandPath;
+    this.flagPrefix = options.flagPrefix;
+  }
+
+  public async start() {
+    await this.load();
+    this.client.addListener("messageCreate", (msg: Message) => this.handleMessage(msg));
+    this.client.addListener("interactionCreate", (interaction: CommandInteraction) =>
+      this.handleInteraction(interaction)
+    );
   }
 
   public async load() {
@@ -36,21 +54,24 @@ export class CommandHandler {
     const imported: { [key: string]: ClassConstructor<Command> } = await import(
       this.commandExportPath
     );
+
     for (const constructor of Object.values(imported)) {
       const cmd = new constructor();
+      this.emit("commandLoadStart", (cmd.id));
       if (this.commands.has(cmd.id)) {
         throw new Error("Commands cannot have the same ID");
       }
 
       this.commands.set(cmd.id, cmd);
       if (cmd.slash) slashBuilders.push(this.initSlash(cmd));
+      this.emit("commandLoad", cmd.id);
     }
-
     await rest
       .put(Routes.applicationCommands(process.env.CLIENT_ID ?? ""), {
         body: slashBuilders.map((b) => b.toJSON())
       })
       .catch((e) => console.error(e));
+    this.emit("commandsLoaded");
   }
 
   private initSlash(data: Command): SlashCommandBuilder {
@@ -200,7 +221,8 @@ export class CommandHandler {
     contents = contents.replace(/\s+/g, " ");
     const parsed: ParsedArgs = {};
 
-    const flagIdx = contents.indexOf("--") > 0 ? contents.indexOf("--") : contents.length;
+    const flagIdx =
+      contents.indexOf(this.flagPrefix) > 0 ? contents.indexOf(this.flagPrefix) : contents.length;
     for (const arg of args) {
       const spaceIdx = contents.indexOf(" ") > 0 ? contents.indexOf(" ") : contents.length;
       let setValue: ArgTypes = null;
@@ -252,8 +274,7 @@ export class CommandHandler {
           if (setValue) contents = contents.substring(tempVal.length + 1);
           break;
         case ArgumentTypes.Flag:
-          // starts at 2 because of -- prefix
-          tempVal = contents.substring(2, spaceIdx);
+          tempVal = contents.substring(this.flagPrefix.length, spaceIdx);
           if (arg.flagType === FlagTypes.Int) {
             setValue = parseInt(tempVal);
           } else if (arg.flagType === FlagTypes.Number) {
@@ -273,10 +294,7 @@ export class CommandHandler {
     return parsed;
   }
 
-  private parseInteractionArgs(
-    interaction: CommandInteraction,
-    args: Argument[]
-  ): ParsedArgs {
+  private parseInteractionArgs(interaction: CommandInteraction, args: Argument[]): ParsedArgs {
     const parsed: ParsedArgs = {};
     args.forEach((arg) => {
       switch (arg.slashType) {
@@ -286,7 +304,7 @@ export class CommandHandler {
             parsed[arg.name] = parseDuration((val as string | undefined) || "");
           } else {
             parsed[arg.name] = val || null;
-          } 
+          }
           break;
         case ApplicationCommandOptionType.Number:
         case ApplicationCommandOptionType.Boolean:
@@ -294,10 +312,13 @@ export class CommandHandler {
           parsed[arg.name] = interaction.options.get(arg.name, arg.required)?.value || null;
           break;
         case ApplicationCommandOptionType.User:
-          parsed[arg.name] =
-            interaction.options.get(arg.name, arg.required)?.member as ArgTypes ||
-            interaction.options.get(arg.name, arg.required)?.user as ArgTypes ||
-            null;
+          if (arg.type === ArgumentTypes.Member) {
+            parsed[arg.name] =
+              (interaction.options.get(arg.name, arg.required)?.member as ArgTypes) || null;
+          } else {
+            parsed[arg.name] =
+              (interaction.options.get(arg.name, arg.required)?.user as ArgTypes) || null;
+          }
           break;
         case ApplicationCommandOptionType.Role:
           parsed[arg.name] =

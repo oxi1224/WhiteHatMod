@@ -1,13 +1,13 @@
 {
   "name": "whitehatmod",
   "version": "1.0.0",
-  "main": "dist/src/index.js",
+  "main": "dist/src/bot.js",
   "license": "MIT",
   "type": "module",
   "scripts": {
     "build": "rimraf dist && yarn tsc",
-    "dev": "yarn tsc && node ./dist/src/index.js",
-    "start": "yarn build && node ./dist/src/index.js",
+    "dev": "yarn tsc && node ./dist/src/bot.js",
+    "start": "yarn build && node ./dist/src/bot.js",
     "lint": "prettier --plugin=prettier-plugin-organize-imports --check . && eslint .",
     "format": "prettier --plugin=prettier-plugin-organize-imports --write .",
     "test": "node --enable-source-maps --test dist/test"

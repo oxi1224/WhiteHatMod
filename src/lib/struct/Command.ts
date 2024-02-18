@@ -1,5 +1,5 @@
 import { CommandInteraction, Message, PermissionFlagsBits, inlineCode } from "discord.js";
-import { Argument, ParsedArgs } from "./types";
+import { Argument, ParsedArgs } from "../types";
 
 export interface CommandOptions {
   aliases: string[];
