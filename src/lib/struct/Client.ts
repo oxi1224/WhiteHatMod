@@ -6,6 +6,7 @@ import {
   ClientOptions as _ClientOptions
 } from "discord.js";
 import "dotenv/config";
+import { Sequelize } from "sequelize";
 import { CommandHandler, CommandHandlerOptions } from "./CommandHandler.js";
 
 export interface ClientOptions {
@@ -15,13 +16,23 @@ export interface ClientOptions {
 
 export class Client extends _Client {
   public owners: Snowflake[];
+  public env: "prod" | "dev";
+  public db: Sequelize;
   public commandHandler: CommandHandler;
 
   constructor(options: ClientOptions, clientOpts: _ClientOptions) {
     super(clientOpts);
     this.owners = options.owners;
+    this.env = (process.argv.at(2) as "prod" | "dev") || "dev";
+    const url = this.env == "dev" ? process.env.DATABASE_URL_DEV : process.env.DATABASE_URL;
+    this.db = new Sequelize(url || "", {
+      dialect: "postgres",
+      logging: false,
+      define: { timestamps: false }
+    });
     this.commandHandler = new CommandHandler(this, options.commandHandlerOptions);
 
+    // TODO: implement a util logger class to handle things like this:
     this.commandHandler.addListener("commandLoadStart", (id: string) =>
       clearAndWrite("Loading command: " + id)
     );
@@ -31,8 +42,18 @@ export class Client extends _Client {
     this.commandHandler.addListener("commandsLoaded", () => clearAndWrite("Loaded commands ✓\n"));
   }
 
+  private async initDb() {
+    clearAndWrite("Authenticating database");
+    await this.db.authenticate();
+    clearAndWrite("Initializing models");
+    clearAndWrite("Syncing database");
+    await this.db.sync({ alter: true });
+    clearAndWrite("Database setup finished ✓\n");
+  }
+
   public async start() {
     if (!process.env.TOKEN) this.destroy();
+    await this.initDb();
     this.commandHandler.start();
     this.login(process.env.TOKEN);
   }

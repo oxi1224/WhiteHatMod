@@ -15,8 +15,8 @@ import "dotenv/config";
 import { EventEmitter } from "events";
 import { ArgumentTypes, FlagTypes } from "../constants.js";
 import { ArgTypes, Argument, ClassConstructor, ParsedArgs } from "../types.js";
-import { Command } from "./Command.js";
 import { Client } from "./Client.js";
+import { Command } from "./Command.js";
 
 const rest = new REST({ version: "10" }).setToken(process.env.TOKEN ?? "");
 
@@ -57,7 +57,7 @@ export class CommandHandler extends EventEmitter {
 
     for (const constructor of Object.values(imported)) {
       const cmd = new constructor();
-      this.emit("commandLoadStart", (cmd.id));
+      this.emit("commandLoadStart", cmd.id);
       if (this.commands.has(cmd.id)) {
         throw new Error("Commands cannot have the same ID");
       }

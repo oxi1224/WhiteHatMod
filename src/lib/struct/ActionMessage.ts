@@ -1,6 +1,6 @@
 import { CommandInteraction, InteractionReplyOptions, InteractionType, Message } from "discord.js";
 
-type InteractionResponse = InteractionReplyOptions
+type InteractionResponse = InteractionReplyOptions;
 
 // TODO - (?) Maybe implement
 export class ActionMessage {
@@ -14,7 +14,7 @@ export class ActionMessage {
       this.msg = inter;
     }
   }
-  
+
   public async reply(message: string, opts: InteractionResponse) {
     if (this.interaction) {
       if (!opts) throw new Error("Options must be defined when replying to interaction");

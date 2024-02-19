@@ -1,5 +1,7 @@
+import { client } from "#src/bot.js";
 import { CommandInteraction, Message, PermissionFlagsBits, inlineCode } from "discord.js";
-import { Argument, ParsedArgs } from "../types";
+import { Argument, ParsedArgs } from "../types.js";
+import { Client as ClientClass } from "./Client.js";
 
 export interface CommandOptions {
   aliases: string[];
@@ -39,6 +41,9 @@ export abstract class Command {
 
   /** Does the command only work inside of guilds (default = true) */
   public guildOnly: boolean;
+
+  /** Initialized client */
+  public client: ClientClass = client;
 
   constructor(
     name: string,

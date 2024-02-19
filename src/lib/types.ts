@@ -6,13 +6,22 @@ import {
   Role,
   User
 } from "discord.js";
-import { ArgumentTypes, FlagTypes } from "./constants";
+import { ArgumentTypes, FlagTypes } from "./constants.js";
 
 export interface ClassConstructor<T> {
   new (): T;
 }
 
-export type ArgTypes = User | GuildMember | Channel | Role | string | number | string | boolean | null;
+export type ArgTypes =
+  | User
+  | GuildMember
+  | Channel
+  | Role
+  | string
+  | number
+  | string
+  | boolean
+  | null;
 
 export interface ParsedArgs {
   [key: string]: ArgTypes;

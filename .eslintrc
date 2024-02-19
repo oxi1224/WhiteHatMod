@@ -1,8 +1,13 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"],
-  "plugins": ["@typescript-eslint"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+    "plugin:require-extensions/recommended"
+  ],
+  "plugins": ["@typescript-eslint", "require-extensions"],
   "ignorePatterns": ["*.cjs"],
   "parserOptions": {
     "sourceType": "module",

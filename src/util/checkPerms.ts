@@ -16,5 +16,5 @@ export function getPermissionName(permission: bigint): string {
       return perm;
     }
   }
-  return 'UnknownPermission';
+  return "UnknownPermission";
 }
