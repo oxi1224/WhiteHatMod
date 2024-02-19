@@ -7,7 +7,7 @@ export class Ping extends Command {
       description: "Shows the latency of the bot",
       aliases: ["ping", "latency"],
       args: [],
-      slash: false
+      slash: true
     });
   }
 
