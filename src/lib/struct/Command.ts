@@ -75,12 +75,10 @@ export abstract class Command {
   }
 
   public preExecute(msg: Message | CommandInteraction, args: ParsedArgs): boolean {
-    for (const val of Object.values(args)) {
-      for (const arg of this.arguments) {
-        if (arg.required && val === null) {
-          msg.reply("Invalid required argument: " + inlineCode(arg.name));
-          return true;
-        }
+    for (const arg of this.arguments) {
+      if (!args[arg.name] && arg.required) {
+        msg.reply("Invalid required argument: " + inlineCode(arg.name));
+        return true;
       }
     }
     return false;

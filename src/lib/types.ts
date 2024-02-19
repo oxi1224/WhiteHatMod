@@ -32,7 +32,7 @@ export interface Argument {
   description: string;
   required: boolean;
   type: ArgumentTypes;
-  slashType: ApplicationCommandOptionType;
+  slashType?: ApplicationCommandOptionType;
   choices?: APIApplicationCommandOptionChoice<number | string>[];
   flagType?: FlagTypes;
 }

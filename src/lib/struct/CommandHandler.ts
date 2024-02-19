@@ -212,6 +212,7 @@ export class CommandHandler extends EventEmitter {
     return;
   }
 
+  // TODO: Make string flag work with strings longer than a single word
   private async parseCommandArgs(
     contents: string,
     args: Argument[],
@@ -220,11 +221,12 @@ export class CommandHandler extends EventEmitter {
     // Change multiple whitespaces into one space
     contents = contents.replace(/\s+/g, " ");
     const parsed: ParsedArgs = {};
-
-    const flagIdx =
-      contents.indexOf(this.flagPrefix) > 0 ? contents.indexOf(this.flagPrefix) : contents.length;
     for (const arg of args) {
       const spaceIdx = contents.indexOf(" ") > 0 ? contents.indexOf(" ") : contents.length;
+      const flagIdx =
+        contents.indexOf(this.flagPrefix) >= 0
+          ? contents.indexOf(this.flagPrefix)
+          : contents.length;
       let setValue: ArgTypes = null;
       let tempVal: string;
 
@@ -274,17 +276,39 @@ export class CommandHandler extends EventEmitter {
           if (setValue) contents = contents.substring(tempVal.length + 1);
           break;
         case ArgumentTypes.Flag:
-          tempVal = contents.substring(this.flagPrefix.length, spaceIdx);
-          if (arg.flagType === FlagTypes.Int) {
-            setValue = parseInt(tempVal);
-          } else if (arg.flagType === FlagTypes.Number) {
-            setValue = parseFloat(tempVal);
-          } else if (arg.flagType === FlagTypes.String) {
-            setValue = tempVal;
-          } else if (arg.flagType === FlagTypes.Bool) {
-            setValue = tempVal === "true";
+          tempVal = contents.substring(this.flagPrefix.length, spaceIdx); // flag name
+          if (!tempVal || tempVal !== arg.name) {
+            setValue = null;
+            break;
           }
-          if (setValue || setValue === false) contents = contents.substring(spaceIdx + 1);
+          if (arg.flagType === FlagTypes.Bool) {
+            if (tempVal === arg.name) setValue = true;
+            else setValue = false;
+            contents = contents.substring(this.flagPrefix.length, spaceIdx + 1);
+            break;
+          }
+          /**
+           * In the following comments:
+           * _ = space
+           * => = turns into
+           * ... = rest of string
+           */
+          tempVal = contents.substring(this.flagPrefix.length + arg.name.length); // --reason_some_thing_... => _some_thing_...
+          tempVal = tempVal.trimStart(); // _some_thing_... => some_thing_...
+          const nextFlagIdx =
+            tempVal.indexOf(this.flagPrefix) >= 0
+              ? tempVal.indexOf(this.flagPrefix)
+              : tempVal.length;
+          const flagValue = tempVal.substring(0, nextFlagIdx); // some_thing_... => some_thing
+          tempVal = tempVal.substring(nextFlagIdx); // some_thing_... => ...
+          if (arg.flagType === FlagTypes.Int) {
+            setValue = parseInt(flagValue);
+          } else if (arg.flagType === FlagTypes.Number) {
+            setValue = parseFloat(flagValue);
+          } else if (arg.flagType === FlagTypes.String) {
+            setValue = flagValue;
+          }
+          if (setValue) contents = tempVal;
           break;
         default:
           break;
