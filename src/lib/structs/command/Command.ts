@@ -1,7 +1,7 @@
 import { client } from "#src/bot.js";
 import { CommandInteraction, Message, PermissionFlagsBits, inlineCode } from "discord.js";
-import { Argument, ParsedArgs } from "../types.js";
-import { Client as ClientClass } from "./Client.js";
+import { Argument, ParsedArgs } from "../../types.js";
+import { Client as ClientClass } from "../Client.js";
 
 export interface CommandOptions {
   aliases: string[];

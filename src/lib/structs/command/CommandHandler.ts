@@ -13,9 +13,9 @@ import {
 } from "discord.js";
 import "dotenv/config";
 import { EventEmitter } from "events";
-import { ArgumentTypes, FlagTypes } from "../constants.js";
-import { ArgTypes, Argument, ClassConstructor, ParsedArgs } from "../types.js";
-import { Client } from "./Client.js";
+import { ArgumentTypes, FlagTypes } from "../../constants.js";
+import { ArgTypes, Argument, ClassConstructor, ParsedArgs } from "../../types.js";
+import { Client } from "../Client.js";
 import { Command } from "./Command.js";
 
 const rest = new REST({ version: "10" }).setToken(process.env.TOKEN ?? "");

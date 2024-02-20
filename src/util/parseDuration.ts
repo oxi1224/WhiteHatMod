@@ -1,4 +1,4 @@
-import { TimeConversion, TimeStrings } from "#lib";
+import { TimeInMs, TimeStrings } from "#lib";
 
 export function parseDuration(str: string): number | null {
   str = str.replaceAll(" ", "");
@@ -7,5 +7,5 @@ export function parseDuration(str: string): number | null {
   const duration = TimeStrings[suffix.toLowerCase()];
   const amount = parseInt(split.filter((char) => !isNaN(parseInt(char))).join(""));
   if (!duration || !amount) return null;
-  return new Date().getTime() + TimeConversion[duration] * amount;
+  return new Date().getTime() + TimeInMs[duration] * amount;
 }

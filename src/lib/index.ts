@@ -1,6 +1,8 @@
 export * from "./constants.js";
-export * from "./struct/Client.js";
-export * from "./struct/Command.js";
-export * from "./struct/CommandHandler.js";
+export * from "./structs/Client.js";
+export * from "./structs/command/Command.js";
+export * from "./structs/command/CommandHandler.js";
+export * from "./structs/task/Task.js";
+export * from "./structs/task/TaskHandler.js";
 export * from "./types.js";
 // export * from "./ActionMessage.js";

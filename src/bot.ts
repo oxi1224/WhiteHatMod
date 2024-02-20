@@ -1,4 +1,4 @@
-import { Client } from "#lib";
+import { Client, TimeInMs } from "#lib";
 import { GatewayIntentBits } from "discord.js";
 
 export const client = new Client(
@@ -7,7 +7,11 @@ export const client = new Client(
     commandHandlerOptions: {
       prefix: "!",
       flagPrefix: "--",
-      commandPath: "../../commands/index.js"
+      commandPath: "../../../commands/index.js"
+    },
+    taskHandlerOptions: {
+      taskPath: "../../../tasks/index.js",
+      defaultInterval: TimeInMs.Minute
     }
   },
   {

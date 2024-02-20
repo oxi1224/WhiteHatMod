@@ -18,7 +18,7 @@ export const enum FlagTypes {
   String
 }
 
-export enum TimeConversion {
+export enum TimeInMs {
   Milisecond = 1,
   Second = Milisecond * 1000,
   Minute = Second * 60,
@@ -29,7 +29,7 @@ export enum TimeConversion {
   Year = Day * 365
 }
 
-export const TimeStrings: { [key: string]: keyof typeof TimeConversion } = Object.freeze({
+export const TimeStrings: { [key: string]: keyof typeof TimeInMs } = Object.freeze({
   s: "Second",
   sec: "Second",
   second: "Second",
