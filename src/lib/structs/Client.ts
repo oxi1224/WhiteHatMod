@@ -1,5 +1,6 @@
 import { clearAndWrite } from "#util";
 import {
+  GuildResolvable,
   Snowflake,
   UserResolvable,
   Client as _Client,
@@ -10,6 +11,7 @@ import { Sequelize } from "sequelize";
 import { Punishment } from "../models/Punishment.js";
 import { CommandHandler, CommandHandlerOptions } from "./command/CommandHandler.js";
 import { TaskHandler, TaskHandlerOptions } from "./task/TaskHandler.js";
+import * as moderation from "../moderation.js";
 
 export interface ClientOptions {
   owners: Snowflake[];
@@ -38,16 +40,14 @@ export class Client extends _Client {
     this.taskHandler = new TaskHandler(this, options.taskHandlerOptions);
 
     // TODO: implement a util logger class to handle things like this:
-    this.commandHandler.addListener("commandLoadStart", (id: string) =>
+    this.commandHandler.on("commandLoadStart", (id: string) =>
       clearAndWrite("Loading command: " + id)
     );
-    this.commandHandler.addListener("commandLoad", (id: string) =>
-      clearAndWrite("Loaded command: " + id)
-    );
-    this.commandHandler.addListener("commandsLoaded", () => clearAndWrite("Loaded commands ✓\n"));
+    this.commandHandler.on("commandLoad", (id: string) => clearAndWrite("Loaded command: " + id));
+    this.commandHandler.on("commandsLoaded", () => clearAndWrite("Loaded commands ✓\n"));
 
-    this.taskHandler.addListener("taskLoad", (id: string) => clearAndWrite("Loaded task: " + id));
-    this.taskHandler.addListener("loaded", () => clearAndWrite("Tasks loaded ✓\n"));
+    this.taskHandler.on("taskLoad", (id: string) => clearAndWrite("Loaded task: " + id));
+    this.taskHandler.on("loaded", () => clearAndWrite("Tasks loaded ✓\n"));
   }
 
   private async initDb() {
@@ -71,5 +71,43 @@ export class Client extends _Client {
   public isOwner(user: UserResolvable): boolean {
     const id = this.users.resolveId(user) as Snowflake;
     return this.owners.includes(id ?? "");
+  }
+
+  // --------------------------------------------------------- //
+  // This should be in a custom class extending Guild          //
+  // but discord.js has marked it's constructor as private     //
+  // so I'm putting this here as Command has access to Client  //
+  // --------------------------------------------------------- //
+
+  public ban(guild: GuildResolvable, options: moderation.CommandOptions) {
+    moderation.ban(this, guild, options);
+  }
+
+  public unban(guild: GuildResolvable, options: moderation.CommandOptions) {
+    moderation.unban(this, guild, options);
+  }
+
+  public kick(guild: GuildResolvable, options: moderation.CommandOptions) {
+    moderation.kick(this, guild, options);
+  }
+
+  public mute(guild: GuildResolvable, options: moderation.CommandOptions) {
+    moderation.mute(this, guild, options);
+  }
+
+  public unmute(guild: GuildResolvable, options: moderation.CommandOptions) {
+    moderation.unmute(this, guild, options);
+  }
+
+  public timeout(guild: GuildResolvable, options: moderation.CommandOptions) {
+    moderation.timeout(this, guild, options);
+  }
+
+  public untimeout(guild: GuildResolvable, options: moderation.CommandOptions) {
+    moderation.untimeout(this, guild, options);
+  }
+
+  public warn(guild: GuildResolvable, options: moderation.CommandOptions) {
+    moderation.warn(this, guild, options);
   }
 }
