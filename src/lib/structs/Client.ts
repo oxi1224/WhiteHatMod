@@ -9,9 +9,9 @@ import {
 import "dotenv/config";
 import { Sequelize } from "sequelize";
 import { Punishment } from "../models/Punishment.js";
+import * as moderation from "../moderation.js";
 import { CommandHandler, CommandHandlerOptions } from "./command/CommandHandler.js";
 import { TaskHandler, TaskHandlerOptions } from "./task/TaskHandler.js";
-import * as moderation from "../moderation.js";
 
 export interface ClientOptions {
   owners: Snowflake[];
@@ -79,35 +79,35 @@ export class Client extends _Client {
   // so I'm putting this here as Command has access to Client  //
   // --------------------------------------------------------- //
 
-  public ban(guild: GuildResolvable, options: moderation.CommandOptions) {
-    moderation.ban(this, guild, options);
+  public async ban(guild: GuildResolvable, options: moderation.CommandOptions) {
+    return await moderation.ban(this, guild, options);
   }
 
-  public unban(guild: GuildResolvable, options: moderation.CommandOptions) {
-    moderation.unban(this, guild, options);
+  public async unban(guild: GuildResolvable, options: moderation.CommandOptions) {
+    return await moderation.unban(this, guild, options);
   }
 
-  public kick(guild: GuildResolvable, options: moderation.CommandOptions) {
-    moderation.kick(this, guild, options);
+  public async kick(guild: GuildResolvable, options: moderation.CommandOptions) {
+    return await moderation.kick(this, guild, options);
   }
 
-  public mute(guild: GuildResolvable, options: moderation.CommandOptions) {
-    moderation.mute(this, guild, options);
+  public async mute(guild: GuildResolvable, options: moderation.CommandOptions) {
+    return await moderation.mute(this, guild, options);
   }
 
-  public unmute(guild: GuildResolvable, options: moderation.CommandOptions) {
-    moderation.unmute(this, guild, options);
+  public async unmute(guild: GuildResolvable, options: moderation.CommandOptions) {
+    return await moderation.unmute(this, guild, options);
   }
 
-  public timeout(guild: GuildResolvable, options: moderation.CommandOptions) {
-    moderation.timeout(this, guild, options);
+  public async timeout(guild: GuildResolvable, options: moderation.CommandOptions) {
+    return await moderation.timeout(this, guild, options);
   }
 
-  public untimeout(guild: GuildResolvable, options: moderation.CommandOptions) {
-    moderation.untimeout(this, guild, options);
+  public async untimeout(guild: GuildResolvable, options: moderation.CommandOptions) {
+    return await moderation.untimeout(this, guild, options);
   }
 
-  public warn(guild: GuildResolvable, options: moderation.CommandOptions) {
-    moderation.warn(this, guild, options);
+  public async warn(guild: GuildResolvable, options: moderation.CommandOptions) {
+    return await moderation.warn(this, guild, options);
   }
 }

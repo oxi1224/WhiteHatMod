@@ -9,19 +9,22 @@ import {
   inlineCode,
   userMention
 } from "discord.js";
-import { Client } from "./structs/Client.js";
 import { TimeInMs } from "./constants.js";
+import { Client } from "./structs/Client.js";
 
 export interface CommandOptions {
   victim: UserResolvable | GuildMemberResolvable;
   mod: GuildMemberResolvable;
   reason?: string;
   duration?: number;
+  banDeleteDays?: number;
 }
 
 export async function ban(client: Client, guildResolve: GuildResolvable, options: CommandOptions) {
   const guild = await client.guilds.fetch({ guild: guildResolve });
-  let victim: User | GuildMember = await guild.members.fetch(options.victim);
+  let victim: User | GuildMember | null = await guild.members
+    .fetch(options.victim)
+    .catch(() => null);
   if (!victim) victim = await client.users.fetch(options.victim);
   const mod = await guild.members.fetch(options.mod);
 
@@ -38,7 +41,10 @@ export async function ban(client: Client, guildResolve: GuildResolvable, options
   const msg = `You've been ${options.duration ? "" : "permanently "}banned in ${guild.name}${options.duration ? ` until ${timeUnix(options.duration)}` : ""}\nReason: ${inlineCode(options.reason || "N/A")}`;
   await victim.send(msg).catch(() => null);
   try {
-    guild.members.ban(victim, { reason: options.reason || "N/A" });
+    guild.members.ban(victim, {
+      reason: options.reason || "N/A",
+      deleteMessageSeconds: (options.banDeleteDays || 0) * (TimeInMs.Day / 1000)
+    });
     client.emit("ban", guild, {
       victim: victim,
       moderator: mod,
@@ -51,9 +57,15 @@ export async function ban(client: Client, guildResolve: GuildResolvable, options
   }
 }
 
-export async function unban(client: Client, guildResolve: GuildResolvable, options: CommandOptions) {
+export async function unban(
+  client: Client,
+  guildResolve: GuildResolvable,
+  options: CommandOptions
+) {
   const guild = await client.guilds.fetch({ guild: guildResolve });
-  let victim: User | GuildMember = await guild.members.fetch(options.victim);
+  let victim: User | GuildMember | null = await guild.members
+    .fetch(options.victim)
+    .catch(() => null);
   if (!victim) victim = await client.users.fetch(options.victim);
   const mod = await guild.members.fetch(options.mod);
   const bans = await guild.bans.fetch();
@@ -70,7 +82,7 @@ export async function unban(client: Client, guildResolve: GuildResolvable, optio
     client.emit("unban", guild, {
       victim: victim,
       moderator: mod,
-      reason: options.reason,
+      reason: options.reason
     });
     return `Successfully unbanned ${userMention(victim.id)}`;
   } catch (e) {
@@ -80,7 +92,7 @@ export async function unban(client: Client, guildResolve: GuildResolvable, optio
 
 export async function kick(client: Client, guildResolve: GuildResolvable, options: CommandOptions) {
   const guild = await client.guilds.fetch({ guild: guildResolve });
-  const victim: GuildMember = await guild.members.fetch(options.victim);
+  const victim: GuildMember | null = await guild.members.fetch(options.victim).catch(() => null);
   if (!victim) {
     return "User is not in guild";
   }
@@ -98,7 +110,7 @@ export async function kick(client: Client, guildResolve: GuildResolvable, option
     client.emit("kick", guild, {
       victim: victim,
       moderator: mod,
-      reason: options.reason,
+      reason: options.reason
     });
     return `Successfully kicked ${userMention(victim.id)}`;
   } catch (e) {
@@ -108,7 +120,7 @@ export async function kick(client: Client, guildResolve: GuildResolvable, option
 
 export async function mute(client: Client, guildResolve: GuildResolvable, options: CommandOptions) {
   const guild = await client.guilds.fetch({ guild: guildResolve });
-  const victim: GuildMember = await guild.members.fetch(options.victim);
+  const victim: GuildMember | null = await guild.members.fetch(options.victim).catch(() => null);
   const roles = await guild.roles.fetch();
   // TODO implement in guild config
   const mutedRole = roles.find((v) => v.name === "mute" || v.name === "muted");
@@ -141,9 +153,13 @@ export async function mute(client: Client, guildResolve: GuildResolvable, option
   }
 }
 
-export async function unmute(client: Client, guildResolve: GuildResolvable, options: CommandOptions) {
+export async function unmute(
+  client: Client,
+  guildResolve: GuildResolvable,
+  options: CommandOptions
+) {
   const guild = await client.guilds.fetch({ guild: guildResolve });
-  const victim: GuildMember = await guild.members.fetch(options.victim);
+  const victim: GuildMember | null = await guild.members.fetch(options.victim).catch(() => null);
   const roles = await guild.roles.fetch();
   // TODO implement in guild config
   const mutedRole = roles.find((v) => v.name === "mute" || v.name === "muted");
@@ -164,7 +180,7 @@ export async function unmute(client: Client, guildResolve: GuildResolvable, opti
     client.emit("unmute", guild, {
       victim: victim,
       moderator: mod,
-      reason: options.reason,
+      reason: options.reason
     });
     return `Successfully unmuted ${userMention(victim.id)}`;
   } catch (e) {
@@ -172,9 +188,13 @@ export async function unmute(client: Client, guildResolve: GuildResolvable, opti
   }
 }
 
-export async function timeout(client: Client, guildResolve: GuildResolvable, options: CommandOptions) {
+export async function timeout(
+  client: Client,
+  guildResolve: GuildResolvable,
+  options: CommandOptions
+) {
   const guild = await client.guilds.fetch({ guild: guildResolve });
-  const victim: GuildMember = await guild.members.fetch(options.victim);
+  const victim: GuildMember | null = await guild.members.fetch(options.victim).catch(() => null);
   if (!victim) {
     return "User is not in guild";
   }
@@ -182,7 +202,7 @@ export async function timeout(client: Client, guildResolve: GuildResolvable, opt
   if (!mod.permissions.has(PermissionFlagsBits.MuteMembers)) {
     return `You are missing ${inlineCode("MuteMembers")} permissions`;
   }
-  if (!options.duration || (new Date().getTime() + TimeInMs.Week) <= (options?.duration || 0)) {
+  if (!options.duration || new Date().getTime() + TimeInMs.Week <= (options?.duration || 0)) {
     return "Invalid timeout duration. (min: 60s, max: 1 week)";
   }
   const msg = `You've been timed out in ${guild.name}${options.duration ? ` until ${timeUnix(options.duration)}` : ""}\nReason: ${inlineCode(options.reason || "N/A")}`;
@@ -201,9 +221,13 @@ export async function timeout(client: Client, guildResolve: GuildResolvable, opt
   }
 }
 
-export async function untimeout(client: Client, guildResolve: GuildResolvable, options: CommandOptions) {
+export async function untimeout(
+  client: Client,
+  guildResolve: GuildResolvable,
+  options: CommandOptions
+) {
   const guild = await client.guilds.fetch({ guild: guildResolve });
-  const victim: GuildMember = await guild.members.fetch(options.victim);
+  const victim: GuildMember | null = await guild.members.fetch(options.victim).catch(() => null);
   if (!victim) {
     return "User is not in guild";
   }
@@ -218,7 +242,7 @@ export async function untimeout(client: Client, guildResolve: GuildResolvable, o
     client.emit("untimeout", guild, {
       victim: victim,
       moderator: mod,
-      reason: options.reason,
+      reason: options.reason
     });
     return `Successfully removed timed out for ${userMention(victim.id)}`;
   } catch (e) {
@@ -228,7 +252,9 @@ export async function untimeout(client: Client, guildResolve: GuildResolvable, o
 
 export async function warn(client: Client, guildResolve: GuildResolvable, options: CommandOptions) {
   const guild = await client.guilds.fetch({ guild: guildResolve });
-  let victim: User | GuildMember = await guild.members.fetch(options.victim);
+  let victim: User | GuildMember | null = await guild.members
+    .fetch(options.victim)
+    .catch(() => null);
   if (!victim) victim = await client.users.fetch(options.victim);
   const mod = await guild.members.fetch(options.mod);
   if (!mod.permissions.has(PermissionFlagsBits.ManageMessages)) {
@@ -239,7 +265,8 @@ export async function warn(client: Client, guildResolve: GuildResolvable, option
   }
   const msg = `You've been warned in ${guild.name}\nReason: ${inlineCode(options.reason)}`;
   await victim.send(msg).catch(() => null);
-  client.emit("userWarn", { // warn is taken
+  // warn is taken
+  client.emit("userWarn", {
     victim: victim,
     moderator: mod,
     reason: options.reason

@@ -10,7 +10,7 @@ export abstract class Task {
 
   /** Initialized client */
   public client: ClientClass = client;
-  
+
   constructor(id: string, interval?: number) {
     this.id = id;
     this.interval = interval;

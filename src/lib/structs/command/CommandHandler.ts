@@ -212,7 +212,6 @@ export class CommandHandler extends EventEmitter {
     return;
   }
 
-  // TODO: Make string flag work with strings longer than a single word
   private async parseCommandArgs(
     contents: string,
     args: Argument[],
@@ -233,22 +232,22 @@ export class CommandHandler extends EventEmitter {
       switch (arg.type) {
         case ArgumentTypes.User:
           tempVal = contents.substring(0, spaceIdx).replace(/[\\<>@]/g, "");
-          setValue = guild.client.users.resolve(tempVal);
+          setValue = await guild.client.users.fetch(tempVal);
           if (setValue) contents = contents.substring(spaceIdx + 1);
           break;
         case ArgumentTypes.Member:
           tempVal = contents.substring(0, spaceIdx).replace(/[\\<>@]/g, "");
-          setValue = guild.members.resolve(tempVal);
+          setValue = await guild.members.fetch(tempVal);
           if (setValue) contents = contents.substring(spaceIdx + 1);
           break;
         case ArgumentTypes.Channel:
           tempVal = contents.substring(0, spaceIdx).replace(/[\\<>#]/g, "");
-          setValue = guild.channels.resolve(tempVal);
+          setValue = await guild.channels.fetch(tempVal);
           if (setValue) contents = contents.substring(spaceIdx + 1);
           break;
         case ArgumentTypes.Role:
           tempVal = contents.substring(0, spaceIdx).replace(/[\\<>@&]/g, "");
-          setValue = guild.roles.resolve(tempVal);
+          setValue = await guild.roles.fetch(tempVal);
           if (setValue) contents = contents.substring(spaceIdx + 1);
           break;
         case ArgumentTypes.Text:
