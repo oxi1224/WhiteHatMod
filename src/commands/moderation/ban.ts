@@ -1,4 +1,4 @@
-import { ArgumentTypes, Command, FlagTypes } from "#lib";
+import { ArgumentTypes, Command, FlagTypes, resEmbed } from "#lib";
 import {
   ApplicationCommandOptionType,
   CommandInteraction,
@@ -65,11 +65,11 @@ export class Ban extends Command {
     });
 
     msg.reply({
-      content: res
-      // allowedMentions: {
-      // parse: [],
-      //  repliedUser: true
-      // }
+      embeds: [resEmbed(res)],
+      allowedMentions: {
+        parse: [],
+        repliedUser: true
+      }
     });
   }
 }

@@ -1,18 +1,21 @@
 import { timeUnix } from "#util";
 import {
+  EmbedBuilder,
   GuildMember,
   GuildMemberResolvable,
   GuildResolvable,
   PermissionFlagsBits,
   User,
   UserResolvable,
+  bold,
   inlineCode,
+  italic,
   userMention
 } from "discord.js";
-import { TimeInMs } from "./constants.js";
+import { TimeInMs, colors, emotes } from "./constants.js";
 import { Client } from "./structs/Client.js";
 
-export interface CommandOptions {
+export interface ModerationCommandOptions {
   victim: UserResolvable | GuildMemberResolvable;
   mod: GuildMemberResolvable;
   reason?: string;
@@ -20,7 +23,24 @@ export interface CommandOptions {
   banDeleteDays?: number;
 }
 
-export async function ban(client: Client, guildResolve: GuildResolvable, options: CommandOptions) {
+export type ResponseType = "error" | "success" | "info";
+
+export interface CommandResponse {
+  type: ResponseType;
+  message: string;
+}
+
+export function resEmbed(res: CommandResponse) {
+  return new EmbedBuilder()
+    .setColor(colors[res.type])
+    .setDescription(`${emotes[res.type]} ${italic(bold(res.message))}`);
+}
+
+export async function ban(
+  client: Client,
+  guildResolve: GuildResolvable,
+  options: ModerationCommandOptions
+): Promise<CommandResponse> {
   const guild = await client.guilds.fetch({ guild: guildResolve });
   let victim: User | GuildMember | null = await guild.members
     .fetch(options.victim)
@@ -29,14 +49,23 @@ export async function ban(client: Client, guildResolve: GuildResolvable, options
   const mod = await guild.members.fetch(options.mod);
 
   if (victim instanceof GuildMember && victim.permissions.has(PermissionFlagsBits.ManageMessages)) {
-    return `${userMention(victim.id)} is a staff member`;
+    return {
+      type: "error",
+      message: `${userMention(victim.id)} is a staff member`
+    };
   }
   const bans = await guild.bans.fetch();
   if (bans.has(victim.id)) {
-    return `${userMention(victim.id)} is already banned`;
+    return {
+      type: "info",
+      message: `${userMention(victim.id)} is already banned`
+    };
   }
   if (!mod.permissions.has(PermissionFlagsBits.BanMembers)) {
-    return `You are missing ${inlineCode("BanMembers")} permissions`;
+    return {
+      type: "error",
+      message: `You are missing ${inlineCode("BanMembers")} permissions`
+    };
   }
   const msg = `You've been ${options.duration ? "" : "permanently "}banned in ${guild.name}${options.duration ? ` until ${timeUnix(options.duration)}` : ""}\nReason: ${inlineCode(options.reason || "N/A")}`;
   await victim.send(msg).catch(() => null);
@@ -51,17 +80,23 @@ export async function ban(client: Client, guildResolve: GuildResolvable, options
       reason: options.reason,
       duration: options.duration
     });
-    return `Successfully banned ${userMention(victim.id)}`;
+    return {
+      type: "success",
+      message: `Successfully banned ${userMention(victim.id)}`
+    };
   } catch (e) {
-    return "An error occured during the banning process";
+    return {
+      type: "error",
+      message: "An error occured during the banning process"
+    };
   }
 }
 
 export async function unban(
   client: Client,
   guildResolve: GuildResolvable,
-  options: CommandOptions
-) {
+  options: ModerationCommandOptions
+): Promise<CommandResponse> {
   const guild = await client.guilds.fetch({ guild: guildResolve });
   let victim: User | GuildMember | null = await guild.members
     .fetch(options.victim)
@@ -70,10 +105,16 @@ export async function unban(
   const mod = await guild.members.fetch(options.mod);
   const bans = await guild.bans.fetch();
   if (!bans.has(victim.id)) {
-    return `${userMention(victim.id)} is not banned`;
+    return {
+      type: "info",
+      message: `${userMention(victim.id)} is not banned`
+    };
   }
   if (!mod.permissions.has(PermissionFlagsBits.BanMembers)) {
-    return `You are missing ${inlineCode("BanMembers")} permissions`;
+    return {
+      type: "error",
+      message: `You are missing ${inlineCode("BanMembers")} permissions`
+    };
   }
   const msg = `You've been unbanned in ${guild.name}\nReason: ${inlineCode(options.reason || "N/A")}`;
   await victim.send(msg).catch(() => null);
@@ -84,24 +125,43 @@ export async function unban(
       moderator: mod,
       reason: options.reason
     });
-    return `Successfully unbanned ${userMention(victim.id)}`;
+    return {
+      type: "success",
+      message: `Successfully unbanned ${userMention(victim.id)}`
+    };
   } catch (e) {
-    return "An error occured during the unbanning process";
+    return {
+      type: "error",
+      message: "An error occured during the unbanning process"
+    };
   }
 }
 
-export async function kick(client: Client, guildResolve: GuildResolvable, options: CommandOptions) {
+export async function kick(
+  client: Client,
+  guildResolve: GuildResolvable,
+  options: ModerationCommandOptions
+): Promise<CommandResponse> {
   const guild = await client.guilds.fetch({ guild: guildResolve });
   const victim: GuildMember | null = await guild.members.fetch(options.victim).catch(() => null);
   if (!victim) {
-    return "User is not in guild";
+    return {
+      type: "info",
+      message: "User is not in guild"
+    };
   }
   if (victim.permissions.has(PermissionFlagsBits.ManageMessages)) {
-    return `${userMention(victim.id)} is a staff member`;
+    return {
+      type: "error",
+      message: `${userMention(victim.id)} is a staff member`
+    };
   }
   const mod = await guild.members.fetch(options.mod);
   if (!mod.permissions.has(PermissionFlagsBits.KickMembers)) {
-    return `You are missing ${inlineCode("KickMembers")} permissions`;
+    return {
+      type: "error",
+      message: `You are missing ${inlineCode("KickMembers")} permissions`
+    };
   }
   const msg = `You've been kicked from ${guild.name}\nReason: ${inlineCode(options.reason || "N/A")}`;
   await victim.send(msg).catch(() => null);
@@ -112,30 +172,52 @@ export async function kick(client: Client, guildResolve: GuildResolvable, option
       moderator: mod,
       reason: options.reason
     });
-    return `Successfully kicked ${userMention(victim.id)}`;
+    return {
+      type: "success",
+      message: `Successfully kicked ${userMention(victim.id)}`
+    };
   } catch (e) {
-    return "An error occured during the kicking process";
+    return {
+      type: "error",
+      message: "An error occured during the kicking process"
+    };
   }
 }
 
-export async function mute(client: Client, guildResolve: GuildResolvable, options: CommandOptions) {
+export async function mute(
+  client: Client,
+  guildResolve: GuildResolvable,
+  options: ModerationCommandOptions
+): Promise<CommandResponse> {
   const guild = await client.guilds.fetch({ guild: guildResolve });
   const victim: GuildMember | null = await guild.members.fetch(options.victim).catch(() => null);
   const roles = await guild.roles.fetch();
   // TODO implement in guild config
   const mutedRole = roles.find((v) => v.name === "mute" || v.name === "muted");
   if (!mutedRole) {
-    return "Failed to find the muted role";
+    return {
+      type: "error",
+      message: "Failed to find the muted role"
+    };
   }
   if (!victim) {
-    return "User is not in guild";
+    return {
+      type: "info",
+      message: "User is not in guild"
+    };
   }
   if (victim.permissions.has(PermissionFlagsBits.ManageMessages)) {
-    return `${userMention(victim.id)} is a staff member`;
+    return {
+      type: "error",
+      message: `${userMention(victim.id)} is a staff member`
+    };
   }
   const mod = await guild.members.fetch(options.mod);
   if (!mod.permissions.has(PermissionFlagsBits.MuteMembers)) {
-    return `You are missing ${inlineCode("MuteMembers")} permissions`;
+    return {
+      type: "error",
+      message: `You are missing ${inlineCode("MuteMembers")} permissions`
+    };
   }
   const msg = `You've been ${options.duration ? "" : "permanently "}muted in ${guild.name}${options.duration ? ` until ${timeUnix(options.duration)}` : ""}\nReason: ${inlineCode(options.reason || "N/A")}`;
   await victim.send(msg).catch(() => null);
@@ -147,31 +229,46 @@ export async function mute(client: Client, guildResolve: GuildResolvable, option
       reason: options.reason,
       duration: options.duration
     });
-    return `Successfully muted ${userMention(victim.id)}`;
+    return {
+      type: "success",
+      message: `Successfully muted ${userMention(victim.id)}`
+    };
   } catch (e) {
-    return "An error occured during the muting process";
+    return {
+      type: "error",
+      message: "An error occured during the muting process"
+    };
   }
 }
 
 export async function unmute(
   client: Client,
   guildResolve: GuildResolvable,
-  options: CommandOptions
-) {
+  options: ModerationCommandOptions
+): Promise<CommandResponse> {
   const guild = await client.guilds.fetch({ guild: guildResolve });
   const victim: GuildMember | null = await guild.members.fetch(options.victim).catch(() => null);
   const roles = await guild.roles.fetch();
   // TODO implement in guild config
   const mutedRole = roles.find((v) => v.name === "mute" || v.name === "muted");
   if (!mutedRole) {
-    return "Failed to find the muted role";
+    return {
+      type: "error",
+      message: "Failed to find the muted role"
+    };
   }
   if (!victim) {
-    return "User is not in guild";
+    return {
+      type: "info",
+      message: "User is not in guild"
+    };
   }
   const mod = await guild.members.fetch(options.mod);
   if (!mod.permissions.has(PermissionFlagsBits.MuteMembers)) {
-    return `You are missing ${inlineCode("MuteMembers")} permissions`;
+    return {
+      type: "error",
+      message: `You are missing ${inlineCode("MuteMembers")} permissions`
+    };
   }
   const msg = `You've been unmuted in ${guild.name}\nReason: ${inlineCode(options.reason || "N/A")}`;
   await victim.send(msg).catch(() => null);
@@ -182,28 +279,43 @@ export async function unmute(
       moderator: mod,
       reason: options.reason
     });
-    return `Successfully unmuted ${userMention(victim.id)}`;
+    return {
+      type: "success",
+      message: `Successfully unmuted ${userMention(victim.id)}`
+    };
   } catch (e) {
-    return "An error occured during the unmuting process";
+    return {
+      type: "error",
+      message: "An error occured during the unmuting process"
+    };
   }
 }
 
 export async function timeout(
   client: Client,
   guildResolve: GuildResolvable,
-  options: CommandOptions
-) {
+  options: ModerationCommandOptions
+): Promise<CommandResponse> {
   const guild = await client.guilds.fetch({ guild: guildResolve });
-  const victim: GuildMember | null = await guild.members.fetch(options.victim).catch(() => null);
+  const victim: GuildMember | null = await guild.members.fetch(options.victim);
   if (!victim) {
-    return "User is not in guild";
+    return {
+      type: "info",
+      message: "User is not in guild"
+    };
   }
   const mod = await guild.members.fetch(options.mod);
   if (!mod.permissions.has(PermissionFlagsBits.MuteMembers)) {
-    return `You are missing ${inlineCode("MuteMembers")} permissions`;
+    return {
+      type: "error",
+      message: `You are missing ${inlineCode("MuteMembers")} permissions`
+    };
   }
   if (!options.duration || new Date().getTime() + TimeInMs.Week <= (options?.duration || 0)) {
-    return "Invalid timeout duration. (min: 60s, max: 1 week)";
+    return {
+      type: "error",
+      message: "Invalid timeout duration. (min: 60s, max: 1 week)"
+    };
   }
   const msg = `You've been timed out in ${guild.name}${options.duration ? ` until ${timeUnix(options.duration)}` : ""}\nReason: ${inlineCode(options.reason || "N/A")}`;
   await victim.send(msg).catch(() => null);
@@ -215,25 +327,37 @@ export async function timeout(
       reason: options.reason,
       duration: options.duration
     });
-    return `Successfully timed out ${userMention(victim.id)}`;
+    return {
+      type: "success",
+      message: `Successfully timed out ${userMention(victim.id)}`
+    };
   } catch (e) {
-    return "An error occured during the timeout process";
+    return {
+      type: "error",
+      message: "An error occured during the timeout process"
+    };
   }
 }
 
 export async function untimeout(
   client: Client,
   guildResolve: GuildResolvable,
-  options: CommandOptions
-) {
+  options: ModerationCommandOptions
+): Promise<CommandResponse> {
   const guild = await client.guilds.fetch({ guild: guildResolve });
   const victim: GuildMember | null = await guild.members.fetch(options.victim).catch(() => null);
   if (!victim) {
-    return "User is not in guild";
+    return {
+      type: "info",
+      message: "User is not in guild"
+    };
   }
   const mod = await guild.members.fetch(options.mod);
   if (!mod.permissions.has(PermissionFlagsBits.MuteMembers)) {
-    return `You are missing ${inlineCode("MuteMembers")} permissions`;
+    return {
+      type: "error",
+      message: `You are missing ${inlineCode("MuteMembers")} permissions`
+    };
   }
   const msg = `You've been un timed out in ${guild.name}\nReason: ${inlineCode(options.reason || "N/A")}`;
   await victim.send(msg).catch(() => null);
@@ -244,13 +368,23 @@ export async function untimeout(
       moderator: mod,
       reason: options.reason
     });
-    return `Successfully removed timed out for ${userMention(victim.id)}`;
+    return {
+      type: "success",
+      message: `Successfully removed time out for ${userMention(victim.id)}`
+    };
   } catch (e) {
-    return "An error occured during the untimeout process";
+    return {
+      type: "error",
+      message: "An error occured during the untimeout process"
+    };
   }
 }
 
-export async function warn(client: Client, guildResolve: GuildResolvable, options: CommandOptions) {
+export async function warn(
+  client: Client,
+  guildResolve: GuildResolvable,
+  options: ModerationCommandOptions
+): Promise<CommandResponse> {
   const guild = await client.guilds.fetch({ guild: guildResolve });
   let victim: User | GuildMember | null = await guild.members
     .fetch(options.victim)
@@ -258,10 +392,16 @@ export async function warn(client: Client, guildResolve: GuildResolvable, option
   if (!victim) victim = await client.users.fetch(options.victim);
   const mod = await guild.members.fetch(options.mod);
   if (!mod.permissions.has(PermissionFlagsBits.ManageMessages)) {
-    return `You are missing ${inlineCode("ManageMessages")} permissions`;
+    return {
+      type: "error",
+      message: `You are missing ${inlineCode("ManageMessages")} permissions`
+    };
   }
   if (!options.reason) {
-    return "Warn must have a reason";
+    return {
+      type: "info",
+      message: "Warn must have a reason"
+    };
   }
   const msg = `You've been warned in ${guild.name}\nReason: ${inlineCode(options.reason)}`;
   await victim.send(msg).catch(() => null);
@@ -271,5 +411,8 @@ export async function warn(client: Client, guildResolve: GuildResolvable, option
     moderator: mod,
     reason: options.reason
   });
-  return `Successfully warned ${userMention(victim.id)}`;
+  return {
+    type: "success",
+    message: `Successfully warned ${userMention(victim.id)}`
+  };
 }

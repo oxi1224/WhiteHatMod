@@ -6,7 +6,7 @@ import {
   Role,
   User
 } from "discord.js";
-import { ArgumentTypes, FlagTypes } from "./constants.js";
+import { ArgumentTypes, FlagTypes, colors } from "./constants.js";
 
 export interface ClassConstructor<T> {
   new (): T;
@@ -36,3 +36,5 @@ export interface Argument {
   choices?: APIApplicationCommandOptionChoice<number | string>[];
   flagType?: FlagTypes;
 }
+
+export type ColorType = keyof typeof colors;

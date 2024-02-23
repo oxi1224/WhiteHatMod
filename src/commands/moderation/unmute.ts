@@ -1,31 +1,31 @@
-import { ArgumentTypes, Command } from "#lib";
+import { ArgumentTypes, Command, resEmbed } from "#lib";
 import {
   ApplicationCommandOptionType,
   CommandInteraction,
+  GuildMember,
   GuildMemberResolvable,
-  Message,
-  User
+  Message
 } from "discord.js";
 
-export class Unban extends Command {
+export class Unmute extends Command {
   constructor() {
-    super("unban", {
-      description: "Unbans a user from the guild",
-      aliases: ["unban"],
+    super("unmute", {
+      description: "Unmutes a member in the guild",
+      aliases: ["unmute"],
       args: [
         {
-          name: "user",
-          type: ArgumentTypes.User,
+          name: "member",
+          type: ArgumentTypes.Member,
           slashType: ApplicationCommandOptionType.User,
           required: true,
-          description: "The user to unban"
+          description: "The member to unmute"
         },
         {
           name: "reason",
           type: ArgumentTypes.Text,
           slashType: ApplicationCommandOptionType.String,
           required: false,
-          description: "The reason of the unban"
+          description: "The reason of the unmute"
         }
       ],
       slash: true
@@ -35,16 +35,22 @@ export class Unban extends Command {
   override async execute(
     msg: Message | CommandInteraction,
     args: {
-      user: User;
+      member: GuildMember;
       reason?: string;
     }
   ) {
-    const res = await this.client.unban(msg.guild!, {
+    const res = await this.client.unmute(msg.guild!, {
       mod: msg.member! as GuildMemberResolvable,
-      victim: args.user,
+      victim: args.member,
       reason: args.reason
     });
 
-    msg.reply(res);
+    msg.reply({
+      embeds: [resEmbed(res)],
+      allowedMentions: {
+        parse: [],
+        repliedUser: true
+      }
+    });
   }
 }

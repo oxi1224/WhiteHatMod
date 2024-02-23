@@ -1,3 +1,5 @@
+import { ColorResolvable, Colors, EmojiResolvable } from "discord.js";
+
 export const enum ArgumentTypes {
   User,
   Member,
@@ -56,4 +58,18 @@ export const TimeStrings: { [key: string]: keyof typeof TimeInMs } = Object.free
   yr: "Year",
   year: "Year",
   years: "Year"
+});
+
+export const colors: { [key: string]: ColorResolvable } = Object.freeze({
+  base: "#0099ff",
+  error: "#ef4047",
+  success: "#3fa45d",
+  info: "#cb8715",
+  ...Colors
+});
+
+export const emotes: { [key: string]: EmojiResolvable } = Object.freeze({
+  success: "<:success:980866382323396723>",
+  error: "<:error:980866363461599292>",
+  info: "<:info:980866381283201025>"
 });

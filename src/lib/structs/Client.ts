@@ -79,35 +79,35 @@ export class Client extends _Client {
   // so I'm putting this here as Command has access to Client  //
   // --------------------------------------------------------- //
 
-  public async ban(guild: GuildResolvable, options: moderation.CommandOptions) {
+  public async ban(guild: GuildResolvable, options: moderation.ModerationCommandOptions) {
     return await moderation.ban(this, guild, options);
   }
 
-  public async unban(guild: GuildResolvable, options: moderation.CommandOptions) {
+  public async unban(guild: GuildResolvable, options: moderation.ModerationCommandOptions) {
     return await moderation.unban(this, guild, options);
   }
 
-  public async kick(guild: GuildResolvable, options: moderation.CommandOptions) {
+  public async kick(guild: GuildResolvable, options: moderation.ModerationCommandOptions) {
     return await moderation.kick(this, guild, options);
   }
 
-  public async mute(guild: GuildResolvable, options: moderation.CommandOptions) {
+  public async mute(guild: GuildResolvable, options: moderation.ModerationCommandOptions) {
     return await moderation.mute(this, guild, options);
   }
 
-  public async unmute(guild: GuildResolvable, options: moderation.CommandOptions) {
+  public async unmute(guild: GuildResolvable, options: moderation.ModerationCommandOptions) {
     return await moderation.unmute(this, guild, options);
   }
 
-  public async timeout(guild: GuildResolvable, options: moderation.CommandOptions) {
+  public async timeout(guild: GuildResolvable, options: moderation.ModerationCommandOptions) {
     return await moderation.timeout(this, guild, options);
   }
 
-  public async untimeout(guild: GuildResolvable, options: moderation.CommandOptions) {
+  public async untimeout(guild: GuildResolvable, options: moderation.ModerationCommandOptions) {
     return await moderation.untimeout(this, guild, options);
   }
 
-  public async warn(guild: GuildResolvable, options: moderation.CommandOptions) {
+  public async warn(guild: GuildResolvable, options: moderation.ModerationCommandOptions) {
     return await moderation.warn(this, guild, options);
   }
 }
