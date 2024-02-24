@@ -75,8 +75,8 @@ export const emotes: { [key: string]: EmojiResolvable } = Object.freeze({
 });
 
 export const staticIDs: { [key: string]: Snowflake } = Object.freeze({
-  "mainGuild": "508779434929815554",
-  "mainGuildDev": "613024666079985702",
-  "errorChannel": "981918816739131443",
-  "errorChannelDev": "980478015412772884"
+  mainGuild: "508779434929815554",
+  mainGuildDev: "613024666079985702",
+  errorChannel: "981918816739131443",
+  errorChannelDev: "980478015412772884"
 });

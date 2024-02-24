@@ -1,5 +1,12 @@
 import { Snowflake } from "discord.js";
-import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, Model, Sequelize } from "sequelize";
+import {
+  CreationOptional,
+  DataTypes,
+  InferAttributes,
+  InferCreationAttributes,
+  Model,
+  Sequelize
+} from "sequelize";
 
 export type PunishmentType = "MUTE" | "BAN" | "WARN" | "KICK" | "UNBAN" | "UNMUTE" | "PURGE";
 

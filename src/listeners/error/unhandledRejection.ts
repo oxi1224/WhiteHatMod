@@ -11,15 +11,17 @@ export class UnhandledRejectionListener extends Listener {
   }
 
   public override async execute(err: Error) {
-    if (this.client.env === 'dev') throw err;
+    if (this.client.env === "dev") throw err;
     if (!err) return;
     const guild = await this.client.guilds.fetch(staticIDs.mainGuild);
     if (!guild) throw err;
-    const errorChannel = await guild.channels.fetch(staticIDs.errorChannel) as TextChannel;
+    const errorChannel = (await guild.channels.fetch(staticIDs.errorChannel)) as TextChannel;
     if (!errorChannel) throw err;
     const embed = new EmbedBuilder().setTimestamp().setColor(colors.error);
 
-    const fields: EmbedField[] = [{ name: "Error:", value: codeBlock("", err.name), inline: false }];
+    const fields: EmbedField[] = [
+      { name: "Error:", value: codeBlock("", err.name), inline: false }
+    ];
     const stack = err.stack ?? "";
     if (stack.length > 1000) {
       let fieldIndex = 1;

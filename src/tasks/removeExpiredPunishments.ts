@@ -53,7 +53,7 @@ export class RemoveExpiredPunishments extends Task {
       if (!logChannel) continue;
       const botMember = await guild.members.fetchMe();
       const logsEntry = await Punishment.create({
-        type: "UN" + punishment.type as PunishmentType,
+        type: ("UN" + punishment.type) as PunishmentType,
         guildID: guild.id,
         victimID: punishment.victimID,
         modID: botMember.id,
@@ -69,7 +69,7 @@ export class RemoveExpiredPunishments extends Task {
           modlogEmbed(logsEntry.id, {
             victim: victim,
             moderator: botMember,
-            type: "UN" + punishment.type as PunishmentType,
+            type: ("UN" + punishment.type) as PunishmentType,
             reason: "Time's up!"
           })
         ],

@@ -14,8 +14,8 @@ import {
   userMention
 } from "discord.js";
 import { TimeInMs, colors, emotes } from "./constants.js";
-import { Client } from "./structs/Client.js";
 import { PunishmentType } from "./models/Punishment.js";
+import { Client } from "./structs/Client.js";
 
 export interface ModerationCommandOptions {
   victim: UserResolvable | GuildMemberResolvable;

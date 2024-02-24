@@ -9,12 +9,12 @@ import {
 } from "discord.js";
 import "dotenv/config";
 import { Sequelize } from "sequelize";
+import { GuildConfig } from "../models/GuildConfig.js";
 import { Punishment } from "../models/Punishment.js";
 import * as moderation from "../moderation.js";
 import { CommandHandler, CommandHandlerOptions } from "./command/CommandHandler.js";
 import { ListenerHandler, ListenerHandlerOptions } from "./listener/ListenerHandler.js";
 import { TaskHandler, TaskHandlerOptions } from "./task/TaskHandler.js";
-import { GuildConfig } from "../models/GuildConfig.js";
 
 export interface ClientOptions {
   owners: Snowflake[];

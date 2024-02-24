@@ -15,11 +15,13 @@ export class UncaughtExceptionListener extends Listener {
     if (!err) return;
     const guild = await this.client.guilds.fetch(staticIDs.mainGuildDev);
     if (!guild) throw err;
-    const errorChannel = await guild.channels.fetch(staticIDs.errorChannelDev) as TextChannel;
+    const errorChannel = (await guild.channels.fetch(staticIDs.errorChannelDev)) as TextChannel;
     if (!errorChannel) throw err;
     const embed = new EmbedBuilder().setTimestamp().setColor(colors.error);
 
-    const fields: EmbedField[] = [{ name: "Error:", value: codeBlock("", err.name), inline: false }];
+    const fields: EmbedField[] = [
+      { name: "Error:", value: codeBlock("", err.name), inline: false }
+    ];
     const stack = err.stack ?? "";
     if (stack.length > 1000) {
       let fieldIndex = 1;

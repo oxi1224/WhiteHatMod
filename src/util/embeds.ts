@@ -2,10 +2,7 @@ import { ModerationEventData, colors } from "#lib";
 import { EmbedBuilder, EmbedField, inlineCode, userMention } from "discord.js";
 import { timeUnix } from "./timeUnix.js";
 
-export function modlogEmbed(
-  logID: number,
-  data: ModerationEventData
-) {
+export function modlogEmbed(logID: number, data: ModerationEventData) {
   const embed = new EmbedBuilder()
     .setTimestamp()
     .setColor(colors.base)
