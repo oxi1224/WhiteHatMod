@@ -15,6 +15,7 @@ export class Punishment extends Model<
   declare victimID: Snowflake;
   declare modID: Snowflake;
   declare date: CreationOptional<Date>;
+  declare handled: CreationOptional<boolean>;
 
   public static initialize(sequelize: Sequelize) {
     Punishment.init(
@@ -26,7 +27,8 @@ export class Punishment extends Model<
         guildID: { type: DataTypes.TEXT, allowNull: false },
         victimID: { type: DataTypes.TEXT, allowNull: false },
         modID: { type: DataTypes.TEXT, allowNull: false },
-        date: { type: DataTypes.DATE, allowNull: true, defaultValue: new Date() }
+        date: { type: DataTypes.DATE, allowNull: true, defaultValue: new Date() },
+        handled: { type: DataTypes.BOOLEAN, allowNull: true, defaultValue: false }
       },
       { sequelize }
     );

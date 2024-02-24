@@ -1,4 +1,4 @@
-import { ColorResolvable, Colors, EmojiResolvable } from "discord.js";
+import { ColorResolvable, Colors, EmojiResolvable, Snowflake } from "discord.js";
 
 export const enum ArgumentTypes {
   User,
@@ -72,4 +72,11 @@ export const emotes: { [key: string]: EmojiResolvable } = Object.freeze({
   success: "<:success:980866382323396723>",
   error: "<:error:980866363461599292>",
   info: "<:info:980866381283201025>"
+});
+
+export const staticIDs: { [key: string]: Snowflake } = Object.freeze({
+  "mainGuild": "508779434929815554",
+  "mainGuildDev": "613024666079985702",
+  "errorChannel": "981918816739131443",
+  "errorChannelDev": "980478015412772884"
 });
