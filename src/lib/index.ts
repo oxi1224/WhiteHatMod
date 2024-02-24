@@ -1,5 +1,6 @@
 export * from "./constants.js";
 export * from "./models/Punishment.js";
+export * from "./models/GuildConfig.js";
 export * from "./moderation.js";
 export * from "./structs/Client.js";
 export * from "./structs/command/Command.js";

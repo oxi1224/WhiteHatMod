@@ -1,1 +1,1 @@
-export * from "./banListener.js";
+export * from "./punishment.js";

@@ -5,6 +5,7 @@ import {
   GuildMemberResolvable,
   GuildResolvable,
   PermissionFlagsBits,
+  Role,
   User,
   UserResolvable,
   bold,
@@ -14,6 +15,7 @@ import {
 } from "discord.js";
 import { TimeInMs, colors, emotes } from "./constants.js";
 import { Client } from "./structs/Client.js";
+import { PunishmentType } from "./models/Punishment.js";
 
 export interface ModerationCommandOptions {
   victim: UserResolvable | GuildMemberResolvable;
@@ -31,6 +33,7 @@ export interface CommandResponse {
 }
 
 export interface ModerationEventData {
+  type: PunishmentType;
   victim: User | GuildMember;
   moderator: GuildMember;
   reason?: string;
@@ -81,7 +84,8 @@ export async function ban(
       reason: options.reason || "N/A",
       deleteMessageSeconds: (options.banDeleteDays || 0) * (TimeInMs.Day / 1000)
     });
-    client.emit("ban", guild, {
+    client.emit("punishmentAdd", guild, {
+      type: "BAN",
       victim: victim,
       moderator: mod,
       reason: options.reason,
@@ -127,7 +131,8 @@ export async function unban(
   await victim.send(msg).catch(() => null);
   try {
     guild.members.unban(victim);
-    client.emit("unban", guild, {
+    client.emit("punishmentAdd", guild, {
+      type: "UNBAN",
       victim: victim,
       moderator: mod,
       reason: options.reason
@@ -174,7 +179,8 @@ export async function kick(
   await victim.send(msg).catch(() => null);
   try {
     guild.members.kick(victim, options.reason || "N/A");
-    client.emit("kick", guild, {
+    client.emit("punishmentAdd", guild, {
+      type: "KICK",
       victim: victim,
       moderator: mod,
       reason: options.reason
@@ -198,9 +204,15 @@ export async function mute(
 ): Promise<CommandResponse> {
   const guild = await client.guilds.fetch({ guild: guildResolve });
   const victim: GuildMember | null = await guild.members.fetch(options.victim).catch(() => null);
-  const roles = await guild.roles.fetch();
-  // TODO implement in guild config
-  const mutedRole = roles.find((v) => v.name === "mute" || v.name === "muted");
+  let mutedRole: Role | null = null;
+  const cfg = await client.getGuildConfig(guild);
+  if (cfg && cfg.mutedRole) {
+    mutedRole = await guild.roles.fetch(cfg.mutedRole);
+  }
+  if (!mutedRole) {
+    const roles = await guild.roles.fetch();
+    mutedRole = roles.find((v) => v.name === "mute" || v.name === "muted") || null;
+  }
   if (!mutedRole) {
     return {
       type: "error",
@@ -230,7 +242,8 @@ export async function mute(
   await victim.send(msg).catch(() => null);
   try {
     victim.roles.add(mutedRole);
-    client.emit("mute", guild, {
+    client.emit("punishmentAdd", guild, {
+      type: "MUTE",
       victim: victim,
       moderator: mod,
       reason: options.reason,
@@ -255,9 +268,15 @@ export async function unmute(
 ): Promise<CommandResponse> {
   const guild = await client.guilds.fetch({ guild: guildResolve });
   const victim: GuildMember | null = await guild.members.fetch(options.victim).catch(() => null);
-  const roles = await guild.roles.fetch();
-  // TODO implement in guild config
-  const mutedRole = roles.find((v) => v.name === "mute" || v.name === "muted");
+  let mutedRole: Role | null = null;
+  const cfg = await client.getGuildConfig(guild);
+  if (cfg && cfg.mutedRole) {
+    mutedRole = await guild.roles.fetch(cfg.mutedRole);
+  }
+  if (!mutedRole) {
+    const roles = await guild.roles.fetch();
+    mutedRole = roles.find((v) => v.name === "mute" || v.name === "muted") || null;
+  }
   if (!mutedRole) {
     return {
       type: "error",
@@ -281,7 +300,8 @@ export async function unmute(
   await victim.send(msg).catch(() => null);
   try {
     victim.roles.remove(mutedRole);
-    client.emit("unmute", guild, {
+    client.emit("punishmentAdd", guild, {
+      type: "UNMUTE",
       victim: victim,
       moderator: mod,
       reason: options.reason
@@ -328,7 +348,8 @@ export async function timeout(
   await victim.send(msg).catch(() => null);
   try {
     victim.timeout(options.duration - new Date().getTime(), options.reason || "N/A");
-    client.emit("timeout", guild, {
+    client.emit("punishmentAdd", guild, {
+      type: "TIMEOUT",
       victim: victim,
       moderator: mod,
       reason: options.reason,
@@ -370,7 +391,8 @@ export async function untimeout(
   await victim.send(msg).catch(() => null);
   try {
     victim.timeout(null, options.reason || "N/A");
-    client.emit("untimeout", guild, {
+    client.emit("punishmentAdd", guild, {
+      type: "UNTIMEOUT",
       victim: victim,
       moderator: mod,
       reason: options.reason
@@ -413,7 +435,8 @@ export async function warn(
   const msg = `You've been warned in ${guild.name}\nReason: ${inlineCode(options.reason)}`;
   await victim.send(msg).catch(() => null);
   // warn is taken
-  client.emit("userWarn", {
+  client.emit("punishmentAdd", guild, {
+    type: "WARN",
     victim: victim,
     moderator: mod,
     reason: options.reason

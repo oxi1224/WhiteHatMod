@@ -1,5 +1,6 @@
 import { clearAndWrite } from "#util";
 import {
+  Guild,
   GuildResolvable,
   Snowflake,
   UserResolvable,
@@ -13,6 +14,7 @@ import * as moderation from "../moderation.js";
 import { CommandHandler, CommandHandlerOptions } from "./command/CommandHandler.js";
 import { ListenerHandler, ListenerHandlerOptions } from "./listener/ListenerHandler.js";
 import { TaskHandler, TaskHandlerOptions } from "./task/TaskHandler.js";
+import { GuildConfig } from "../models/GuildConfig.js";
 
 export interface ClientOptions {
   owners: Snowflake[];
@@ -64,6 +66,7 @@ export class Client extends _Client {
     await this.db.authenticate();
     clearAndWrite("Initializing models");
     Punishment.initialize(this.db);
+    GuildConfig.initialize(this.db);
     clearAndWrite("Syncing database");
     await this.db.sync({ alter: true });
     clearAndWrite("Database setup finished ✓\n");
@@ -81,6 +84,17 @@ export class Client extends _Client {
   public isOwner(user: UserResolvable): boolean {
     const id = this.users.resolveId(user) as Snowflake;
     return this.owners.includes(id ?? "");
+  }
+
+  public async getGuildConfig(guild: string | Guild) {
+    const id = guild instanceof Guild ? guild.id : guild;
+    const cfg = await GuildConfig.findByPk(id);
+    if (!cfg) {
+      await GuildConfig.create({
+        id: id
+      });
+    }
+    return cfg || null;
   }
 
   // --------------------------------------------------------- //
