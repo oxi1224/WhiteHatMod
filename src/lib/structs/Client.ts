@@ -11,12 +11,14 @@ import { Sequelize } from "sequelize";
 import { Punishment } from "../models/Punishment.js";
 import * as moderation from "../moderation.js";
 import { CommandHandler, CommandHandlerOptions } from "./command/CommandHandler.js";
+import { ListenerHandler, ListenerHandlerOptions } from "./listener/ListenerHandler.js";
 import { TaskHandler, TaskHandlerOptions } from "./task/TaskHandler.js";
 
 export interface ClientOptions {
   owners: Snowflake[];
   commandHandlerOptions: CommandHandlerOptions;
   taskHandlerOptions: TaskHandlerOptions;
+  listenerHandlerOptions: ListenerHandlerOptions;
 }
 
 export class Client extends _Client {
@@ -25,6 +27,7 @@ export class Client extends _Client {
   public db: Sequelize;
   public commandHandler: CommandHandler;
   public taskHandler: TaskHandler;
+  public listenerHandler: ListenerHandler;
 
   constructor(options: ClientOptions, djsClientOpts: _ClientOptions) {
     super(djsClientOpts);
@@ -38,6 +41,7 @@ export class Client extends _Client {
     });
     this.commandHandler = new CommandHandler(this, options.commandHandlerOptions);
     this.taskHandler = new TaskHandler(this, options.taskHandlerOptions);
+    this.listenerHandler = new ListenerHandler(this, options.listenerHandlerOptions);
 
     // TODO: implement a util logger class to handle things like this:
     this.commandHandler.on("commandLoadStart", (id: string) =>
@@ -48,6 +52,11 @@ export class Client extends _Client {
 
     this.taskHandler.on("taskLoad", (id: string) => clearAndWrite("Loaded task: " + id));
     this.taskHandler.on("loaded", () => clearAndWrite("Tasks loaded ✓\n"));
+
+    this.listenerHandler.on("listenerLoad", (id: string) =>
+      clearAndWrite("Loaded listener: " + id)
+    );
+    this.listenerHandler.on("loaded", () => clearAndWrite("Listeners loaded ✓\n"));
   }
 
   private async initDb() {
@@ -65,6 +74,7 @@ export class Client extends _Client {
     await this.initDb();
     await this.commandHandler.start();
     await this.taskHandler.start();
+    await this.listenerHandler.start();
     this.login(process.env.TOKEN);
   }
 

@@ -12,6 +12,9 @@ export const client = new Client(
     taskHandlerOptions: {
       taskPath: "../../../tasks/index.js",
       defaultInterval: TimeInMs.Minute
+    },
+    listenerHandlerOptions: {
+      listenerPath: "../../../listeners/index.js"
     }
   },
   {
@@ -25,9 +28,6 @@ export const client = new Client(
 
 client.start();
 
-// TODO Finish moderation commands
-// TODO ListenerHandler, Listeners
 // TODO Automatic undoing punishments
 // TODO Action logging (punishment, delete, role change etc)
-// TODO Embed responses
 // TODO Guild specific configs in database

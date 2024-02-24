@@ -6,5 +6,7 @@ export * from "./structs/command/Command.js";
 export * from "./structs/command/CommandHandler.js";
 export * from "./structs/task/Task.js";
 export * from "./structs/task/TaskHandler.js";
+export * from "./structs/listener/Listener.js";
+export * from "./structs/listener/ListenerHandler.js";
 export * from "./types.js";
 // export * from "./ActionMessage.js";

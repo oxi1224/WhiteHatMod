@@ -51,7 +51,7 @@ export class Timeout extends Command {
       mod: msg.member! as GuildMemberResolvable,
       victim: args.member,
       reason: args.reason,
-      duration: args.duration - new Date().getTime()
+      duration: args.duration
     });
 
     msg.reply({

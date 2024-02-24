@@ -30,6 +30,13 @@ export interface CommandResponse {
   message: string;
 }
 
+export interface ModerationEventData {
+  victim: User | GuildMember;
+  moderator: GuildMember;
+  reason?: string;
+  duration?: number;
+}
+
 export function resEmbed(res: CommandResponse) {
   return new EmbedBuilder()
     .setColor(colors[res.type])
@@ -320,7 +327,7 @@ export async function timeout(
   const msg = `You've been timed out in ${guild.name}${options.duration ? ` until ${timeUnix(options.duration)}` : ""}\nReason: ${inlineCode(options.reason || "N/A")}`;
   await victim.send(msg).catch(() => null);
   try {
-    victim.timeout(options.duration, options.reason || "N/A");
+    victim.timeout(options.duration - new Date().getTime(), options.reason || "N/A");
     client.emit("timeout", guild, {
       victim: victim,
       moderator: mod,
