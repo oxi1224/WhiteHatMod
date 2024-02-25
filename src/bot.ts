@@ -27,7 +27,3 @@ export const client = new Client(
 );
 
 client.start();
-
-// TODO Automatic undoing punishments
-// TODO Action logging (punishment, delete, role change etc)
-// TODO Guild specific configs in database
