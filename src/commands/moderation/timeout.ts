@@ -4,7 +4,8 @@ import {
   CommandInteraction,
   GuildMember,
   GuildMemberResolvable,
-  Message
+  Message,
+  PermissionFlagsBits
 } from "discord.js";
 
 export class Timeout extends Command {
@@ -35,6 +36,8 @@ export class Timeout extends Command {
           description: "The reason of the timeout"
         }
       ],
+      botPerms: [PermissionFlagsBits.MuteMembers],
+      userPerms: [PermissionFlagsBits.MuteMembers],
       slash: true
     });
   }

@@ -4,7 +4,8 @@ import {
   CommandInteraction,
   GuildMember,
   GuildMemberResolvable,
-  Message
+  Message,
+  PermissionFlagsBits
 } from "discord.js";
 
 export class Unmute extends Command {
@@ -28,6 +29,8 @@ export class Unmute extends Command {
           description: "The reason of the unmute"
         }
       ],
+      botPerms: [PermissionFlagsBits.MuteMembers],
+      userPerms: [PermissionFlagsBits.MuteMembers],
       slash: true
     });
   }

@@ -71,7 +71,12 @@ export const colors: { [key: string]: ColorResolvable } = Object.freeze({
 export const emotes: { [key: string]: EmojiResolvable } = Object.freeze({
   success: "<:success:980866382323396723>",
   error: "<:error:980866363461599292>",
-  info: "<:info:980866381283201025>"
+  info: "<:info:980866381283201025>",
+  first: "1005496736053215292",
+  back: "1005496734497128528",
+  delete: "1005496740297838693",
+  next: "1005496737332477994",
+  last: "1005497936257495120",
 });
 
 export const staticIDs: { [key: string]: Snowflake } = Object.freeze({

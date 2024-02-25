@@ -46,6 +46,24 @@ export function resEmbed(res: CommandResponse) {
     .setDescription(`${emotes[res.type]} ${italic(bold(res.message))}`);
 }
 
+function dmEmbed(
+  guildName: string,
+  action: string,
+  reason: string,
+  duration: number | null | string
+) {
+  let description = `Reason: ${inlineCode(reason)}`;
+  if (duration !== null)
+    description +=
+      typeof duration == "string"
+        ? `\nDuration: ${inlineCode(duration)}`
+        : `\nUntil: ${timeUnix(duration)}`;
+  return new EmbedBuilder()
+    .setColor(colors.base)
+    .setTitle(`You've been ${action} in ${guildName}`)
+    .setDescription(description);
+}
+
 export async function ban(
   client: Client,
   guildResolve: GuildResolvable,
@@ -77,8 +95,10 @@ export async function ban(
       message: `You are missing ${inlineCode("BanMembers")} permissions`
     };
   }
-  const msg = `You've been ${options.duration ? "" : "permanently "}banned in ${guild.name}${options.duration ? ` until ${timeUnix(options.duration)}` : ""}\nReason: ${inlineCode(options.reason || "N/A")}`;
-  await victim.send(msg).catch(() => null);
+  // prettier-ignore
+  await victim.send({
+    embeds: [dmEmbed(guild.name, "banned", options.reason || "N/A", options.duration || "Permanent")]
+  }).catch(() => null);
   try {
     guild.members.ban(victim, {
       reason: options.reason || "N/A",
@@ -127,8 +147,10 @@ export async function unban(
       message: `You are missing ${inlineCode("BanMembers")} permissions`
     };
   }
-  const msg = `You've been unbanned in ${guild.name}\nReason: ${inlineCode(options.reason || "N/A")}`;
-  await victim.send(msg).catch(() => null);
+  // prettier-ignore
+  await victim.send({
+    embeds: [dmEmbed(guild.name, "unbanned", options.reason || "N/A", null)]
+  }).catch(() => null);
   try {
     guild.members.unban(victim);
     client.emit("punishmentAdd", guild, {
@@ -175,8 +197,10 @@ export async function kick(
       message: `You are missing ${inlineCode("KickMembers")} permissions`
     };
   }
-  const msg = `You've been kicked from ${guild.name}\nReason: ${inlineCode(options.reason || "N/A")}`;
-  await victim.send(msg).catch(() => null);
+  // prettier-ignore
+  await victim.send({
+    embeds: [dmEmbed(guild.name, "kicked", options.reason || "N/A", null)]
+  }).catch(() => null);
   try {
     guild.members.kick(victim, options.reason || "N/A");
     client.emit("punishmentAdd", guild, {
@@ -238,8 +262,10 @@ export async function mute(
       message: `You are missing ${inlineCode("MuteMembers")} permissions`
     };
   }
-  const msg = `You've been ${options.duration ? "" : "permanently "}muted in ${guild.name}${options.duration ? ` until ${timeUnix(options.duration)}` : ""}\nReason: ${inlineCode(options.reason || "N/A")}`;
-  await victim.send(msg).catch(() => null);
+  // prettier-ignore
+  await victim.send({
+    embeds: [dmEmbed(guild.name, "muted", options.reason || "N/A", options.duration || "Permanent")]
+  }).catch(() => null);
   try {
     victim.roles.add(mutedRole);
     client.emit("punishmentAdd", guild, {
@@ -296,8 +322,10 @@ export async function unmute(
       message: `You are missing ${inlineCode("MuteMembers")} permissions`
     };
   }
-  const msg = `You've been unmuted in ${guild.name}\nReason: ${inlineCode(options.reason || "N/A")}`;
-  await victim.send(msg).catch(() => null);
+  // prettier-ignore
+  await victim.send({
+    embeds: [dmEmbed(guild.name, "unmuted", options.reason || "N/A", null)]
+  }).catch(() => null);
   try {
     victim.roles.remove(mutedRole);
     client.emit("punishmentAdd", guild, {
@@ -344,8 +372,10 @@ export async function timeout(
       message: "Invalid timeout duration. (min: 60s, max: 1 week)"
     };
   }
-  const msg = `You've been timed out in ${guild.name}${options.duration ? ` until ${timeUnix(options.duration)}` : ""}\nReason: ${inlineCode(options.reason || "N/A")}`;
-  await victim.send(msg).catch(() => null);
+  // prettier-ignore
+  await victim.send({
+    embeds: [dmEmbed(guild.name, "ban", options.reason || "N/A", options.duration)]
+  }).catch(() => null);
   try {
     victim.timeout(options.duration - new Date().getTime(), options.reason || "N/A");
     client.emit("punishmentAdd", guild, {
@@ -387,8 +417,10 @@ export async function untimeout(
       message: `You are missing ${inlineCode("MuteMembers")} permissions`
     };
   }
-  const msg = `You've been un timed out in ${guild.name}\nReason: ${inlineCode(options.reason || "N/A")}`;
-  await victim.send(msg).catch(() => null);
+  // prettier-ignore
+  await victim.send({
+    embeds: [dmEmbed(guild.name, "untimeout", options.reason || "N/A", null)]
+  }).catch(() => null);
   try {
     victim.timeout(null, options.reason || "N/A");
     client.emit("punishmentAdd", guild, {
@@ -432,9 +464,10 @@ export async function warn(
       message: "Warn must have a reason"
     };
   }
-  const msg = `You've been warned in ${guild.name}\nReason: ${inlineCode(options.reason)}`;
-  await victim.send(msg).catch(() => null);
-  // warn is taken
+  // prettier-ignore
+  await victim.send({
+    embeds: [dmEmbed(guild.name, "warned", options.reason || "N/A", null)]
+  }).catch(() => null);
   client.emit("punishmentAdd", guild, {
     type: "WARN",
     victim: victim,

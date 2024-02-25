@@ -39,7 +39,7 @@ export class Client extends _Client {
     this.db = new Sequelize(url || "", {
       dialect: "postgres",
       logging: false,
-      define: { timestamps: false }
+      define: { createdAt: true, updatedAt: false }
     });
     this.commandHandler = new CommandHandler(this, options.commandHandlerOptions);
     this.taskHandler = new TaskHandler(this, options.taskHandlerOptions);
@@ -78,7 +78,8 @@ export class Client extends _Client {
     await this.commandHandler.start();
     await this.taskHandler.start();
     await this.listenerHandler.start();
-    this.login(process.env.TOKEN);
+    await this.login(process.env.TOKEN);
+    console.log("Logged in as: " + this.user?.displayName);
   }
 
   public isOwner(user: UserResolvable): boolean {

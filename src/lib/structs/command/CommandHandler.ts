@@ -3,6 +3,7 @@ import {
   ApplicationCommandOptionType,
   Collection,
   CommandInteraction,
+  EmbedBuilder,
   Guild,
   GuildMember,
   Message,
@@ -13,7 +14,7 @@ import {
 } from "discord.js";
 import "dotenv/config";
 import { EventEmitter } from "events";
-import { ArgumentTypes, FlagTypes } from "../../constants.js";
+import { ArgumentTypes, FlagTypes, colors, emotes } from "../../constants.js";
 import { ArgTypes, Argument, ClassConstructor, ParsedArgs } from "../../types.js";
 import { Client } from "../Client.js";
 import { Command } from "./Command.js";
@@ -162,15 +163,18 @@ export class CommandHandler extends EventEmitter {
       const botMember: GuildMember = await msg.guild!.members.fetchMe();
       const botPerms = getMissingPermNames(botMember, commandObject.botPerms);
 
+      const errEmbed = new EmbedBuilder().setColor(colors.info);
       if (userPerms.length > 0) {
-        return msg.reply(
-          "You are missing the following permissions: " + inlineCode(userPerms.join(", "))
+        errEmbed.setDescription(
+          emotes.info + "You are missing the following permissions: " + inlineCode(userPerms.join(", "))
         );
+        return msg.reply({ embeds: [errEmbed] });
       }
       if (botPerms.length > 0) {
-        return msg.reply(
-          "The bot is missing the following permissions: " + inlineCode(botPerms.join(", "))
+        errEmbed.setDescription(
+          emotes.info + "I am missing the following permissions: " + inlineCode(botPerms.join(", "))
         );
+        return msg.reply({ embeds: [errEmbed] });
       }
       const commandContent = msg.content.substring((spaceIdx || msg.content.length) + 1);
       const args = await this.parseCommandArgs(
@@ -193,16 +197,18 @@ export class CommandHandler extends EventEmitter {
       const botMember: GuildMember = await interaction.guild!.members.fetchMe();
       const botPerms = getMissingPermNames(botMember, cmd.botPerms);
 
+      const errEmbed = new EmbedBuilder().setColor(colors.info);
       if (userPerms.length > 0) {
-        return interaction.reply({
-          content: "You are missing the following permissions: " + inlineCode(userPerms.join(", ")),
-          ephemeral: true
-        });
+        errEmbed.setDescription(
+          emotes.info + "You are missing the following permissions: " + inlineCode(userPerms.join(", "))
+        );
+        return interaction.reply({ embeds: [errEmbed], ephemeral: true });
       }
       if (botPerms.length > 0) {
-        return interaction.reply(
-          "The bot is missing the following permissions: " + inlineCode(botPerms.join(", "))
+        errEmbed.setDescription(
+          emotes.info + "I am missing the following permissions: " + inlineCode(botPerms.join(", "))
         );
+        return interaction.reply({ embeds: [errEmbed] });
       }
       const args = this.parseInteractionArgs(interaction, cmd.arguments);
       const stopExecution = cmd.preExecute(interaction, args);

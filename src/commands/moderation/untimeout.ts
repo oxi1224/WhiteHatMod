@@ -4,7 +4,8 @@ import {
   CommandInteraction,
   GuildMember,
   GuildMemberResolvable,
-  Message
+  Message,
+  PermissionFlagsBits
 } from "discord.js";
 
 export class Untimeout extends Command {
@@ -28,6 +29,8 @@ export class Untimeout extends Command {
           description: "The reason of the untimeout"
         }
       ],
+      botPerms: [PermissionFlagsBits.MuteMembers],
+      userPerms: [PermissionFlagsBits.MuteMembers],
       slash: true
     });
   }

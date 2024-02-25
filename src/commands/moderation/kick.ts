@@ -4,7 +4,8 @@ import {
   CommandInteraction,
   GuildMember,
   GuildMemberResolvable,
-  Message
+  Message,
+  PermissionFlagsBits
 } from "discord.js";
 
 export class Kick extends Command {
@@ -28,6 +29,8 @@ export class Kick extends Command {
           description: "The reason of the kick"
         }
       ],
+      botPerms: [PermissionFlagsBits.KickMembers],
+      userPerms: [PermissionFlagsBits.KickMembers],
       slash: true
     });
   }

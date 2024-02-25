@@ -4,6 +4,7 @@ import {
   CommandInteraction,
   GuildMemberResolvable,
   Message,
+  PermissionFlagsBits,
   User
 } from "discord.js";
 
@@ -43,6 +44,8 @@ export class Ban extends Command {
           description: "Delete messages this old from user"
         }
       ],
+      botPerms: [PermissionFlagsBits.BanMembers],
+      userPerms: [PermissionFlagsBits.BanMembers],
       slash: true
     });
   }

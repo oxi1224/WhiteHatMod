@@ -4,6 +4,7 @@ import {
   CommandInteraction,
   GuildMemberResolvable,
   Message,
+  PermissionFlagsBits,
   User
 } from "discord.js";
 
@@ -28,6 +29,8 @@ export class Unban extends Command {
           description: "The reason of the unban"
         }
       ],
+      botPerms: [PermissionFlagsBits.BanMembers],
+      userPerms: [PermissionFlagsBits.BanMembers],
       slash: true
     });
   }

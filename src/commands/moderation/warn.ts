@@ -4,6 +4,7 @@ import {
   CommandInteraction,
   GuildMemberResolvable,
   Message,
+  PermissionFlagsBits,
   User
 } from "discord.js";
 
@@ -28,6 +29,8 @@ export class Warn extends Command {
           description: "The reason of the warn"
         }
       ],
+      botPerms: [PermissionFlagsBits.ManageMessages],
+      userPerms: [PermissionFlagsBits.ManageMessages],
       slash: true
     });
   }

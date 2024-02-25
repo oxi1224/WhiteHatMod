@@ -12,10 +12,6 @@ export class PunishmentListener extends Listener {
   }
 
   override async execute(guild: Guild, data: ModerationEventData) {
-    const cfg = await this.client.getGuildConfig(guild);
-    if (!cfg || !cfg?.logChannel) return;
-    const logChannel = (await guild.channels.fetch(cfg.logChannel)) as TextChannel;
-    if (!logChannel) return;
     const logsEntry = await Punishment.create({
       type: data.type,
       guildID: guild.id,
@@ -24,6 +20,10 @@ export class PunishmentListener extends Listener {
       reason: data.reason,
       duration: data.duration
     });
+    const cfg = await this.client.getGuildConfig(guild);
+    if (!cfg || !cfg?.logChannel) return;
+    const logChannel = (await guild.channels.fetch(cfg.logChannel)) as TextChannel;
+    if (!logChannel) return;
     if (!logsEntry) {
       logChannel.send("An error occured while trying to create modlog");
       return;
