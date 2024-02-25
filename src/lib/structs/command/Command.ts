@@ -6,6 +6,9 @@ import { Client as ClientClass } from "../Client.js";
 export interface CommandOptions {
   aliases: string[];
   description: string;
+  usage?: string;
+  category?: string;
+  examples?: string[];
   args: Argument[];
   slash?: boolean;
   nsfw?: boolean;
@@ -42,6 +45,15 @@ export abstract class Command {
   /** Does the command only work inside of guilds (default = true) */
   public guildOnly: boolean;
 
+  /** Category to which the command belongs */
+  public category: string;
+
+  /** Usage of the command, <arg> - required, [arg] - optional  */
+  public usage: string;
+
+  /** Usage examples */
+  public examples: string[];
+
   /** Initialized client */
   public client: ClientClass = client;
 
@@ -55,7 +67,10 @@ export abstract class Command {
       nsfw = false,
       userPerms = [],
       botPerms = [PermissionFlagsBits.SendMessages],
-      guildOnly = true
+      guildOnly = true,
+      usage = "",
+      category = "",
+      examples = []
     }: CommandOptions
   ) {
     this.id = name;
@@ -67,6 +82,9 @@ export abstract class Command {
     this.userPerms = userPerms;
     this.botPerms = botPerms;
     this.guildOnly = guildOnly;
+    this.usage = usage;
+    this.category = category;
+    this.examples = examples;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

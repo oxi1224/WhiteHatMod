@@ -21,6 +21,9 @@ export class Modlogs extends Command {
     super("modlogs", {
       description: "Shows the punishment history of a user",
       aliases: ["modlogs", "punishments"],
+      category: "moderation",
+      usage: "modlogs <user>",
+      examples: ["modlogs @oxi"],
       args: [
         {
           name: "user",

@@ -13,6 +13,9 @@ export class Unban extends Command {
     super("unban", {
       description: "Unbans a user from the guild",
       aliases: ["unban"],
+      category: "moderation",
+      usage: "unban <user> [reason]",
+      examples: ["unban @oxi wrong ban duration"],
       args: [
         {
           name: "user",

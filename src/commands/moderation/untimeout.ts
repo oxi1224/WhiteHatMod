@@ -13,6 +13,9 @@ export class Untimeout extends Command {
     super("untimeout", {
       description: "Removes timeout from a member in the guild",
       aliases: ["untimeout"],
+      category: "moderation",
+      usage: "untimeout <user> [reason]",
+      examples: ["untimeout @oxi wrong duration"],
       args: [
         {
           name: "member",

@@ -6,12 +6,15 @@ export class Ping extends Command {
     super("ping", {
       description: "Shows the latency of the bot",
       aliases: ["ping", "latency"],
+      category: "info",
+      usage: "ping",
+      examples: ["ping"],
       args: [],
       slash: true
     });
   }
 
-  override execute(msg: Message | CommandInteraction): void {
+  override execute(msg: Message | CommandInteraction) {
     const timeDifferece = new Date().getTime() - msg.createdTimestamp;
     const apiPing = msg.client.ws.ping;
     const embed = new EmbedBuilder().addFields([

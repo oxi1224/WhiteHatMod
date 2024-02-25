@@ -13,6 +13,9 @@ export class Kick extends Command {
     super("kick", {
       description: "Kicks a member from the guild",
       aliases: ["kick"],
+      category: "moderation",
+      usage: "kick <user> [reason]",
+      examples: ["kick @oxi spamming"],
       args: [
         {
           name: "member",

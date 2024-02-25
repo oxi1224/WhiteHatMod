@@ -13,6 +13,9 @@ export class Warn extends Command {
     super("warn", {
       description: "Warns a user",
       aliases: ["warn"],
+      category: "moderation",
+      usage: "warn <user> <reason>",
+      examples: ["warn @oxi swearing"],
       args: [
         {
           name: "user",

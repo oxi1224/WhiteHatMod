@@ -13,6 +13,9 @@ export class Timeout extends Command {
     super("timeout", {
       description: "Timeouts a member in the guild",
       aliases: ["timeout"],
+      category: "moderation",
+      usage: "timeout <user> [duration] [reason]",
+      examples: ["timeout @oxi 1d spamming"],
       args: [
         {
           name: "member",

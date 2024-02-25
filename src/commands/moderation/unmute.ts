@@ -13,6 +13,9 @@ export class Unmute extends Command {
     super("unmute", {
       description: "Unmutes a member in the guild",
       aliases: ["unmute"],
+      category: "moderation",
+      usage: "unmute <user> [reason]",
+      examples: ["unmute @oxi wrong duration"],
       args: [
         {
           name: "member",

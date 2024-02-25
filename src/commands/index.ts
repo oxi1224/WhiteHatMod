@@ -1,3 +1,5 @@
+export * from "./info/help.js";
+export * from "./info/ping.js";
 export * from "./moderation/ban.js";
 export * from "./moderation/kick.js";
 export * from "./moderation/modlogs.js";
@@ -7,4 +9,3 @@ export * from "./moderation/unban.js";
 export * from "./moderation/unmute.js";
 export * from "./moderation/untimeout.js";
 export * from "./moderation/warn.js";
-export * from "./ping.js";

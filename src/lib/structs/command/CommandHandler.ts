@@ -32,7 +32,7 @@ export class CommandHandler extends EventEmitter {
   public client: Client;
   public flagPrefix: string;
 
-  private commands = new Collection<string, Command>();
+  public commands = new Collection<string, Command>();
   private commandExportPath: string;
   constructor(client: Client, options: CommandHandlerOptions) {
     super();

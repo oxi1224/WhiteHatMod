@@ -13,6 +13,9 @@ export class Ban extends Command {
     super("ban", {
       description: "Bans a user from the guild",
       aliases: ["ban"],
+      category: "moderation",
+      usage: "ban <user> [duration] [reason] [--delete number]",
+      examples: ["ban @oxi 7d spamming --delete 6", "ban @oxi spamming"],
       args: [
         {
           name: "user",
@@ -41,7 +44,7 @@ export class Ban extends Command {
           slashType: ApplicationCommandOptionType.Number,
           flagType: FlagTypes.Int,
           required: false,
-          description: "Delete messages this old from user"
+          description: "Timespan (in days) from which to delete messages"
         }
       ],
       botPerms: [PermissionFlagsBits.BanMembers],

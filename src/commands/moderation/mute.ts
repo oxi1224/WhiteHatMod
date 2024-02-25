@@ -13,6 +13,9 @@ export class Mute extends Command {
     super("mute", {
       description: "Mutes a member in the guild",
       aliases: ["mute"],
+      category: "moderation",
+      usage: "mute <user> [duration] [reason]",
+      examples: ["mute @oxi 1d spamming"],
       args: [
         {
           name: "member",

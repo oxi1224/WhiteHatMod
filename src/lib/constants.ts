@@ -1,6 +1,6 @@
 import { ColorResolvable, Colors, EmojiResolvable, Snowflake } from "discord.js";
 
-export const enum ArgumentTypes {
+export enum ArgumentTypes {
   User,
   Member,
   Channel,
@@ -13,7 +13,7 @@ export const enum ArgumentTypes {
   Flag
 }
 
-export const enum FlagTypes {
+export enum FlagTypes {
   Int,
   Number,
   Bool,
