@@ -76,7 +76,7 @@ export const emotes: { [key: string]: EmojiResolvable } = Object.freeze({
   back: "1005496734497128528",
   delete: "1005496740297838693",
   next: "1005496737332477994",
-  last: "1005497936257495120",
+  last: "1005497936257495120"
 });
 
 export const staticIDs: { [key: string]: Snowflake } = Object.freeze({

@@ -166,7 +166,9 @@ export class CommandHandler extends EventEmitter {
       const errEmbed = new EmbedBuilder().setColor(colors.info);
       if (userPerms.length > 0) {
         errEmbed.setDescription(
-          emotes.info + "You are missing the following permissions: " + inlineCode(userPerms.join(", "))
+          emotes.info +
+            "You are missing the following permissions: " +
+            inlineCode(userPerms.join(", "))
         );
         return msg.reply({ embeds: [errEmbed] });
       }
@@ -200,7 +202,9 @@ export class CommandHandler extends EventEmitter {
       const errEmbed = new EmbedBuilder().setColor(colors.info);
       if (userPerms.length > 0) {
         errEmbed.setDescription(
-          emotes.info + "You are missing the following permissions: " + inlineCode(userPerms.join(", "))
+          emotes.info +
+            "You are missing the following permissions: " +
+            inlineCode(userPerms.join(", "))
         );
         return interaction.reply({ embeds: [errEmbed], ephemeral: true });
       }
