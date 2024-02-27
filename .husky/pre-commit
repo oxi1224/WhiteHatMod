@@ -1,2 +1,4 @@
 yarn format
+echo "Formatting Done"
 git add .
+echo "Added all files"
