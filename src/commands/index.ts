@@ -1,5 +1,7 @@
+export * from "./info/avatar.js";
 export * from "./info/help.js";
 export * from "./info/ping.js";
+export * from "./info/user.js";
 export * from "./moderation/ban.js";
 export * from "./moderation/kick.js";
 export * from "./moderation/modlogs.js";

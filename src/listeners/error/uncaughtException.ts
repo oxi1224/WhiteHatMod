@@ -11,11 +11,14 @@ export class UncaughtExceptionListener extends Listener {
   }
 
   public override async execute(err: Error) {
-    // if (this.client.env === 'dev') throw err;
+    if (this.client.env === "dev") {
+      console.error(err);
+      process.exit(1);
+    }
     if (!err) return;
-    const guild = await this.client.guilds.fetch(staticIDs.mainGuildDev);
+    const guild = await this.client.guilds.fetch(staticIDs.mainGuild);
     if (!guild) throw err;
-    const errorChannel = (await guild.channels.fetch(staticIDs.errorChannelDev)) as TextChannel;
+    const errorChannel = (await guild.channels.fetch(staticIDs.errorChannel)) as TextChannel;
     if (!errorChannel) throw err;
     const embed = new EmbedBuilder().setTimestamp().setColor(colors.error);
 

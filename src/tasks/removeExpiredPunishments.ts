@@ -25,7 +25,6 @@ export class RemoveExpiredPunishments extends Task {
     for (const punishment of punishments) {
       const guild = await this.client.guilds.fetch(punishment.guildID);
       if (!guild) continue;
-      // TODO error logging
       const cfg = await this.client.getGuildConfig(guild);
       let victim: User | GuildMember | null = await guild.members
         .fetch(punishment.victimID)

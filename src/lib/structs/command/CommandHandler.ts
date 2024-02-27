@@ -242,22 +242,22 @@ export class CommandHandler extends EventEmitter {
       switch (arg.type) {
         case ArgumentTypes.User:
           tempVal = contents.substring(0, spaceIdx).replace(/[\\<>@]/g, "");
-          setValue = await guild.client.users.fetch(tempVal);
+          setValue = await guild.client.users.fetch(tempVal).catch(() => null);
           if (setValue) contents = contents.substring(spaceIdx + 1);
           break;
         case ArgumentTypes.Member:
           tempVal = contents.substring(0, spaceIdx).replace(/[\\<>@]/g, "");
-          setValue = await guild.members.fetch(tempVal);
+          setValue = await guild.members.fetch(tempVal).catch(() => null);
           if (setValue) contents = contents.substring(spaceIdx + 1);
           break;
         case ArgumentTypes.Channel:
           tempVal = contents.substring(0, spaceIdx).replace(/[\\<>#]/g, "");
-          setValue = await guild.channels.fetch(tempVal);
+          setValue = await guild.channels.fetch(tempVal).catch(() => null);
           if (setValue) contents = contents.substring(spaceIdx + 1);
           break;
         case ArgumentTypes.Role:
           tempVal = contents.substring(0, spaceIdx).replace(/[\\<>@&]/g, "");
-          setValue = await guild.roles.fetch(tempVal);
+          setValue = await guild.roles.fetch(tempVal).catch(() => null);
           if (setValue) contents = contents.substring(spaceIdx + 1);
           break;
         case ArgumentTypes.Text:

@@ -11,7 +11,10 @@ export class UnhandledRejectionListener extends Listener {
   }
 
   public override async execute(err: Error) {
-    if (this.client.env === "dev") throw err;
+    if (this.client.env === "dev") {
+      console.error(err);
+      process.exit(1);
+    }
     if (!err) return;
     const guild = await this.client.guilds.fetch(staticIDs.mainGuild);
     if (!guild) throw err;
