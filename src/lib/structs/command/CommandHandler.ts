@@ -261,8 +261,11 @@ export class CommandHandler extends EventEmitter {
           if (setValue) contents = contents.substring(spaceIdx + 1);
           break;
         case ArgumentTypes.Text:
-          setValue = contents.substring(0, flagIdx).trim();
-          if (setValue) contents = contents.substring(flagIdx);
+          const nthSpacePos = arg.word_length
+            ? contents.split(" ", arg.word_length).join(" ").length
+            : null;
+          setValue = contents.substring(0, nthSpacePos || flagIdx).trim();
+          if (setValue) contents = contents.substring(nthSpacePos ? nthSpacePos + 1 : flagIdx);
           break;
         case ArgumentTypes.Int:
           tempVal = contents.substring(0, spaceIdx);

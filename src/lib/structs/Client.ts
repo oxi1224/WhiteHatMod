@@ -89,13 +89,13 @@ export class Client extends _Client {
 
   public async getGuildConfig(guild: string | Guild) {
     const id = guild instanceof Guild ? guild.id : guild;
-    const cfg = await GuildConfig.findByPk(id);
+    let cfg = await GuildConfig.findByPk(id);
     if (!cfg) {
-      await GuildConfig.create({
+      cfg = await GuildConfig.create({
         id: id
       });
     }
-    return cfg || null;
+    return cfg;
   }
 
   // --------------------------------------------------------- //

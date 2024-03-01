@@ -21,8 +21,8 @@ export class PunishmentListener extends Listener {
       duration: data.duration
     });
     const cfg = await this.client.getGuildConfig(guild);
-    if (!cfg || !cfg?.logChannel) return;
-    const logChannel = (await guild.channels.fetch(cfg.logChannel)) as TextChannel;
+    if (!cfg || !cfg?.moderationLogChannel) return;
+    const logChannel = (await guild.channels.fetch(cfg.moderationLogChannel)) as TextChannel;
     if (!logChannel) return;
     if (!logsEntry) {
       logChannel.send("An error occured while trying to create modlog");

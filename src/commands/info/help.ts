@@ -1,4 +1,5 @@
 import { ArgumentTypes, Command, FlagTypes, colors } from "#lib";
+import { getPermissionName } from "#util";
 import {
   ApplicationCommandOptionType,
   CommandInteraction,
@@ -65,6 +66,10 @@ export class Help extends Command {
           cmdData.description + (cmdData.slash ? italic("\nWorks with slash commands!") : "")
         )
         .addFields([
+          {
+            name: "Required Perms",
+            value: cmdData.userPerms.map((p) => inlineCode(getPermissionName(p))).join(", ")
+          },
           { name: "Aliases", value: cmdData.aliases.map((a) => inlineCode(a)).join(", ") },
           { name: "Usage", value: inlineCode(cmdData.usage) },
           { name: "Examples", value: cmdData.examples.map((ex) => inlineCode(ex)).join("\n") }

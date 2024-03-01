@@ -47,8 +47,8 @@ export class RemoveExpiredPunishments extends Task {
       punishment.handled = true;
       await punishment.save();
 
-      if (!cfg || !cfg?.logChannel) continue;
-      const logChannel = (await guild.channels.fetch(cfg.logChannel)) as TextChannel;
+      if (!cfg || !cfg?.moderationLogChannel) continue;
+      const logChannel = (await guild.channels.fetch(cfg.moderationLogChannel)) as TextChannel;
       if (!logChannel) continue;
       const botMember = await guild.members.fetchMe();
       const logsEntry = await Punishment.create({

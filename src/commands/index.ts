@@ -1,3 +1,4 @@
+export * from "./config/config.js";
 export * from "./info/avatar.js";
 export * from "./info/help.js";
 export * from "./info/ping.js";

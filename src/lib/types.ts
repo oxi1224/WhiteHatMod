@@ -35,6 +35,7 @@ export interface Argument {
   slashType?: ApplicationCommandOptionType;
   choices?: APIApplicationCommandOptionChoice<number | string>[];
   flagType?: FlagTypes;
+  word_length?: number;
 }
 
 export type ColorType = keyof typeof colors;
