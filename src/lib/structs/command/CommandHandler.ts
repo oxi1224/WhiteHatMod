@@ -152,7 +152,8 @@ export class CommandHandler extends EventEmitter {
 
   public async handleMessage(msg: Message) {
     if (msg.author.id == process.env.CLIENT_ID) return;
-    if (!msg.content.startsWith(this.prefix)) return;
+    const cfg = msg.inGuild() ? await this.client.getGuildConfig(msg.guild) : null;
+    if (!msg.content.startsWith(cfg?.prefix || this.prefix)) return;
 
     const spaceIdx = msg.content.indexOf(" ") > 0 ? msg.content.indexOf(" ") : 0;
     const command = msg.content.substring(1, spaceIdx || msg.content.length);
