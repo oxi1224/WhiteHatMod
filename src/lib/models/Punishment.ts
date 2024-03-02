@@ -17,7 +17,7 @@ export class Punishment extends Model<
   declare id: CreationOptional<number>;
   declare type: PunishmentType;
   declare reason: CreationOptional<string>;
-  declare duration: CreationOptional<number>;
+  declare duration: CreationOptional<number | null>;
   declare guildID: Snowflake;
   declare victimID: Snowflake;
   declare modID: Snowflake;

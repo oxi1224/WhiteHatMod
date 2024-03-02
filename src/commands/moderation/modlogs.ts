@@ -132,8 +132,13 @@ Reason: ${inlineCode(data.reason || "N/A")}
 Moderator: ${userMention(data.modID)}
 `;
       if (addDuration) {
-        fieldValue += `Duration: ${inlineCode(msToTime(data.duration - new Date(data.createdAt).getTime()))}\n`;
-        fieldValue += `Expires: ${timeUnix(data.duration)}\n`;
+        if (data.duration) {
+          fieldValue += `Duration: ${inlineCode(msToTime(data.duration - new Date(data.createdAt).getTime()))}\n`;
+          fieldValue += `Expires: ${timeUnix(data.duration)}\n`;
+        } else {
+          fieldValue += `Duration: ${inlineCode("Permanent")}\n`;
+          fieldValue += `Expires: ${inlineCode("Never")}\n`;
+        }
       }
       fieldValue += `Added: ${timeUnix(data.createdAt.getTime())}`;
       builder.addFields({
