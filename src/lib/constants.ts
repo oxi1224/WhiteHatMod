@@ -84,5 +84,5 @@ export const staticIDs: { [key: string]: Snowflake } = Object.freeze({
   mainGuildDev: "613024666079985702",
   errorChannel: "981918816739131443",
   errorChannelDev: "980478015412772884",
-  guildLogChannel: "" // fill this later
+  guildLogChannel: "981918816739131443"
 });

@@ -7,7 +7,7 @@
   "scripts": {
     "build": "rimraf dist && yarn tsc",
     "dev": "yarn tsc && node ./dist/src/bot.js dev",
-    "start": "prisma generate && yarn build && node ./dist/src/bot.js prod",
+    "start": "yarn build && node ./dist/src/bot.js prod",
     "lint": "prettier --plugin=prettier-plugin-organize-imports --check . && eslint .",
     "format": "prettier --plugin=prettier-plugin-organize-imports --write .",
     "test": "node --enable-source-maps --test dist/test",

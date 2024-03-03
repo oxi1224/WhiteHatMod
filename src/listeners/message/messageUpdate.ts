@@ -12,6 +12,7 @@ export class MessageUpdate extends Listener {
 
   public override async execute(oldMsg: Message, newMsg: Message) {
     if (!newMsg.inGuild()) return;
+    if (newMsg.author.id === process.env.CLIENT_ID) return;
     const cfg = await this.client.getGuildConfig(newMsg.guild.id);
     if (!cfg || !cfg.messageLogChannel) return;
     const logChannel = (await newMsg.guild.channels

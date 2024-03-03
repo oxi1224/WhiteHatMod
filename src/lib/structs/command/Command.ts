@@ -1,5 +1,12 @@
 import { client } from "#src/bot.js";
-import { CommandInteraction, Message, PermissionFlagsBits, inlineCode } from "discord.js";
+import {
+  CommandInteraction,
+  GuildMember,
+  Message,
+  PermissionFlagsBits,
+  channelMention,
+  inlineCode
+} from "discord.js";
 import { Argument, ParsedArgs } from "../../types.js";
 import { Client as ClientClass } from "../Client.js";
 
@@ -92,7 +99,26 @@ export abstract class Command {
     throw new Error("Execute must be overriden. Command ID: " + this.id);
   }
 
-  public preExecute(msg: Message | CommandInteraction, args: ParsedArgs): boolean {
+  public async preExecute(msg: Message | CommandInteraction, args: ParsedArgs): Promise<boolean> {
+    const cfg = await this.client.getGuildConfig(msg.guild!.id);
+    if (
+      cfg.commandChannels.length > 0 &&
+      !cfg.commandChannels.includes(msg.channelId) &&
+      !(msg.member as GuildMember)?.permissions.has(PermissionFlagsBits.ManageMessages)
+    ) {
+      if (msg instanceof CommandInteraction) {
+        msg.reply({
+          content: `Commands must be done in the following channels: ${cfg.commandChannels.map((c) => channelMention(c)).join(", ")}`,
+          ephemeral: true
+        });
+      } else {
+        msg.reply(
+          `Commands must be done in the following channels: ${cfg.commandChannels.map((c) => channelMention(c)).join(", ")}`
+        );
+      }
+      return true;
+    }
+
     for (const arg of this.arguments) {
       if (!args[arg.name] && arg.required) {
         msg.reply("Invalid required argument: " + inlineCode(arg.name));

@@ -185,7 +185,7 @@ export class CommandHandler extends EventEmitter {
         commandObject.arguments,
         msg.guild!
       );
-      const stopExecution = commandObject.preExecute(msg, args);
+      const stopExecution = await commandObject.preExecute(msg, args);
       if (stopExecution) return;
       commandObject.execute(msg, args);
     }
@@ -216,7 +216,7 @@ export class CommandHandler extends EventEmitter {
         return interaction.reply({ embeds: [errEmbed] });
       }
       const args = this.parseInteractionArgs(interaction, cmd.arguments);
-      const stopExecution = cmd.preExecute(interaction, args);
+      const stopExecution = await cmd.preExecute(interaction, args);
       if (stopExecution) return;
       cmd.execute(interaction, args);
     }

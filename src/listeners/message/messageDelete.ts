@@ -1,6 +1,7 @@
 import { Listener, colors } from "#lib";
 import { client } from "#src/bot.js";
 import { EmbedBuilder, Message, TextChannel, inlineCode, userMention } from "discord.js";
+import "dotenv/config";
 
 export class MessageDelete extends Listener {
   constructor() {
@@ -12,6 +13,7 @@ export class MessageDelete extends Listener {
 
   public override async execute(msg: Message) {
     if (!msg.inGuild()) return;
+    if (msg.author.id === process.env.CLIENT_ID) return;
     const cfg = await this.client.getGuildConfig(msg.guild.id);
     if (!cfg || !cfg.messageLogChannel) return;
     const logChannel = (await msg.guild.channels

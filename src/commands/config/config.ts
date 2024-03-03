@@ -169,25 +169,24 @@ export class Config extends Command {
       });
 
     if (args.function === "clear") {
-      // @ts-expect-error weird typing stuff, this will work.
-      if (Array.isArray(cfg[args.key])) cfg[args.key] = [];
-      // @ts-expect-error weird typing stuff, this will work.
-      else cfg[args.key] = null;
+      if (Array.isArray(cfg[args.key])) cfg.set(args.key, []);
+      else cfg.set(args.key, null);
     } else if (Array.isArray(cfg[args.key])) {
-      let value = cfg[args.key] as string[];
-      if (args.function === "add") value.push(args.new_value!);
+      const value = cfg.get(args.key) as string[];
+      if (args.function === "add") cfg.set(args.key, value.concat([args.new_value!]));
       if (args.function === "remove") {
-        const idx = value.findIndex((s) => s === args.new_value);
-        if (idx) value.splice(idx, 1);
+        const idx = value.indexOf(args.new_value!);
+        if (idx !== -1) {
+          value.splice(idx, 1);
+          // idk, doesnt update without this
+          cfg.set(args.key, null);
+          cfg.set(args.key, value);
+          await cfg.save();
+        }
       }
-      if (args.function === "set") value = [args.new_value!];
-      // @ts-expect-error weird typing stuff, this will work.
-      cfg[args.key] = value;
-    } else {
-      let value = cfg[args.key] as unknown;
-      if (args.function === "set") value = args.new_value!;
-      // @ts-expect-error weird typing stuff, this will work.
-      cfg[args.key] = value;
+      if (args.function === "set") cfg.set(args.key, [args.new_value!.toString()]);
+    } else if (args.function === "set") {
+      cfg.set(args.key, args.new_value!);
     }
     await cfg.save();
     msg.reply({

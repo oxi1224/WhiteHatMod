@@ -34,7 +34,7 @@ export class Avatar extends Command {
       .setFooter({ text: `ID: ${user.id}` })
       .setTimestamp()
       .setColor(colors.base)
-      .setTitle(`${user.globalName}'s Avatar`)
+      .setTitle(`${user.globalName || user.displayName}'s Avatar`)
       .setImage(user.displayAvatarURL({ size: 4096 }));
     return msg.reply({ embeds: [embed] });
   }

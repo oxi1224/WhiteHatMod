@@ -8,19 +8,6 @@ import {
   Sequelize
 } from "sequelize";
 
-// key : accept_type
-export const guildConfigKeys = {
-  prefix: "string",
-  moderationLogChannel: "channel",
-  messageLogChannel: "channel",
-  otherLogChannel: "channel",
-  mutedRole: "role",
-  joinRoles: "role",
-  commandChannels: "channel"
-} as const;
-export const arrayTypeKeys = ["joinRoles", "commandChannels"];
-export type GuildConfigKeys = keyof typeof guildConfigKeys;
-
 export class GuildConfig extends Model<
   InferAttributes<GuildConfig>,
   InferCreationAttributes<GuildConfig>
@@ -50,3 +37,18 @@ export class GuildConfig extends Model<
     );
   }
 }
+
+const _keys = GuildConfig.getAttributes();
+
+// key : accept_type
+export const guildConfigKeys: { [key in keyof Omit<typeof _keys, "id">]: string } = {
+  prefix: "string",
+  moderationLogChannel: "channel",
+  messageLogChannel: "channel",
+  otherLogChannel: "channel",
+  mutedRole: "role",
+  joinRoles: "role",
+  commandChannels: "channel"
+} as const;
+export const arrayTypeKeys = ["joinRoles", "commandChannels"];
+export type GuildConfigKeys = keyof typeof guildConfigKeys;

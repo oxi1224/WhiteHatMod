@@ -47,7 +47,10 @@ export class UserCommand extends Command {
       .setTimestamp()
       .setThumbnail(user.displayAvatarURL())
       .setColor(colors.base)
-      .setAuthor({ name: `${user.globalName}`, iconURL: user.displayAvatarURL() });
+      .setAuthor({
+        name: `${user.globalName || user.displayName}`,
+        iconURL: user.displayAvatarURL()
+      });
     const fields: EmbedField[] = [
       {
         name: "Created at:",

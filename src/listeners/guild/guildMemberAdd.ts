@@ -15,7 +15,7 @@ export class GuildMemberAdd extends Listener {
     const cfg = await this.client.getGuildConfig(member.guild.id);
     for (const rID of cfg.joinRoles) {
       const r = await member.guild.roles.fetch(rID).catch(() => null);
-      if (r) member.roles.add(r);
+      if (r) await member.roles.add(r).catch(() => null);
     }
     if (!cfg.mutedRole) return;
     const role = await member.guild.roles.fetch(cfg.mutedRole).catch(() => null);
