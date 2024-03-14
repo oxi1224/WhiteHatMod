@@ -34,7 +34,7 @@ export class Client extends _Client {
   constructor(options: ClientOptions, djsClientOpts: _ClientOptions) {
     super(djsClientOpts);
     this.owners = options.owners;
-    this.env = (process.argv.at(2) as "prod" | "dev") || "dev";
+    this.env = process.argv.at(2) === "dev" ? "dev" : "prod"; // default to prod
     const url = this.env == "dev" ? process.env.DATABASE_URL_DEV : process.env.DATABASE_URL;
     this.db = new Sequelize(url || "", {
       dialect: "postgres",

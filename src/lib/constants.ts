@@ -1,4 +1,4 @@
-import { ColorResolvable, Colors, EmojiResolvable, Snowflake } from "discord.js";
+import { Colors, Snowflake } from "discord.js";
 
 export enum ArgumentTypes {
   User,
@@ -58,17 +58,17 @@ export const TimeStrings: { [key: string]: keyof typeof TimeInMs } = Object.free
   yr: "Year",
   year: "Year",
   years: "Year"
-});
+} as const);
 
-export const colors: { [key: string]: ColorResolvable } = Object.freeze({
+export const colors = Object.freeze({
   base: "#0099ff",
   error: "#ef4047",
   success: "#3fa45d",
   info: "#cb8715",
   ...Colors
-});
+} as const);
 
-export const emotes: { [key: string]: EmojiResolvable } = Object.freeze({
+export const emotes = Object.freeze({
   success: "<:success:980866382323396723>",
   error: "<:error:980866363461599292>",
   info: "<:info:980866381283201025>",
@@ -77,7 +77,7 @@ export const emotes: { [key: string]: EmojiResolvable } = Object.freeze({
   delete: "1005496740297838693",
   next: "1005496737332477994",
   last: "1005497936257495120"
-});
+} as const);
 
 export const staticIDs: { [key: string]: Snowflake } = Object.freeze({
   mainGuild: "508779434929815554",
@@ -85,4 +85,4 @@ export const staticIDs: { [key: string]: Snowflake } = Object.freeze({
   errorChannel: "981918816739131443",
   errorChannelDev: "980478015412772884",
   guildLogChannel: "981918816739131443"
-});
+} as const);

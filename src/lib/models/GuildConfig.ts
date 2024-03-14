@@ -20,6 +20,7 @@ export class GuildConfig extends Model<
   declare mutedRole: CreationOptional<Snowflake | null>;
   declare joinRoles: CreationOptional<Snowflake[]>;
   declare commandChannels: CreationOptional<Snowflake[]>;
+  declare lockdownChannels: CreationOptional<Snowflake[]>;
 
   public static initialize(sequelize: Sequelize) {
     GuildConfig.init(
@@ -31,7 +32,8 @@ export class GuildConfig extends Model<
         otherLogChannel: { type: DataTypes.STRING, allowNull: true, defaultValue: null },
         mutedRole: { type: DataTypes.STRING, allowNull: true, defaultValue: null },
         joinRoles: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [] },
-        commandChannels: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [] }
+        commandChannels: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [] },
+        lockdownChannels: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [] }
       },
       { sequelize }
     );
@@ -48,7 +50,8 @@ export const guildConfigKeys: { [key in keyof Omit<typeof _keys, "id">]: string 
   otherLogChannel: "channel",
   mutedRole: "role",
   joinRoles: "role",
-  commandChannels: "channel"
+  commandChannels: "channel",
+  lockdownChannels: "channel"
 } as const;
-export const arrayTypeKeys = ["joinRoles", "commandChannels"];
+export const arrayTypeKeys = ["joinRoles", "commandChannels", "lockdownChannels"];
 export type GuildConfigKeys = keyof typeof guildConfigKeys;

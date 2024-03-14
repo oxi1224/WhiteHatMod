@@ -156,7 +156,10 @@ export class CommandHandler extends EventEmitter {
     if (!msg.content.startsWith(cfg?.prefix || this.prefix)) return;
 
     const spaceIdx = msg.content.indexOf(" ") > 0 ? msg.content.indexOf(" ") : 0;
-    const command = msg.content.substring(1, spaceIdx || msg.content.length);
+    const command = msg.content.substring(
+      cfg?.prefix.length || this.prefix.length,
+      spaceIdx || msg.content.length
+    );
     const commandObject = this.commands.find((entry) => entry.aliases.includes(command));
     if (commandObject) {
       if ((!msg.inGuild() || !msg.member) && commandObject.guildOnly) return;
@@ -243,21 +246,25 @@ export class CommandHandler extends EventEmitter {
       switch (arg.type) {
         case ArgumentTypes.User:
           tempVal = contents.substring(0, spaceIdx).replace(/[\\<>@]/g, "");
+          if (!tempVal) break; // if empty string is passed to .fetch(), it returns everything
           setValue = await guild.client.users.fetch(tempVal).catch(() => null);
           if (setValue) contents = contents.substring(spaceIdx + 1);
           break;
         case ArgumentTypes.Member:
           tempVal = contents.substring(0, spaceIdx).replace(/[\\<>@]/g, "");
+          if (!tempVal) break; // if empty string is passed to .fetch(), it returns everything
           setValue = await guild.members.fetch(tempVal).catch(() => null);
           if (setValue) contents = contents.substring(spaceIdx + 1);
           break;
         case ArgumentTypes.Channel:
           tempVal = contents.substring(0, spaceIdx).replace(/[\\<>#]/g, "");
+          if (!tempVal) break; // if empty string is passed to .fetch(), it returns everything
           setValue = await guild.channels.fetch(tempVal).catch(() => null);
           if (setValue) contents = contents.substring(spaceIdx + 1);
           break;
         case ArgumentTypes.Role:
           tempVal = contents.substring(0, spaceIdx).replace(/[\\<>@&]/g, "");
+          if (!tempVal) break; // if empty string is passed to .fetch(), it returns everything
           setValue = await guild.roles.fetch(tempVal).catch(() => null);
           if (setValue) contents = contents.substring(spaceIdx + 1);
           break;
