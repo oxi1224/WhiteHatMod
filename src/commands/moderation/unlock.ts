@@ -21,7 +21,7 @@ export class Unlockdown extends Command {
       aliases: ["unlockdown", "unlock"],
       category: "moderation",
       usage: "unlock [channel] [reason]",
-      examples: ["unlock #general raid over", "lockdown raid over"],
+      examples: ["unlock #general raid over", "unlockdown raid over"],
       args: [
         {
           name: "channel",

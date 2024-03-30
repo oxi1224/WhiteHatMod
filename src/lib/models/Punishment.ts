@@ -8,7 +8,16 @@ import {
   Sequelize
 } from "sequelize";
 
-export type PunishmentType = "MUTE" | "BAN" | "WARN" | "KICK" | "UNBAN" | "UNMUTE" | "PURGE";
+export type PunishmentType =
+  | "MUTE"
+  | "BAN"
+  | "WARN"
+  | "KICK"
+  | "UNBAN"
+  | "UNMUTE"
+  | "PURGE"
+  | "INFRACTION"
+  | "INFRACTION-REMOVE";
 
 export class Punishment extends Model<
   InferAttributes<Punishment>,

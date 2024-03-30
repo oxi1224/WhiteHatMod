@@ -118,7 +118,7 @@ export class Config extends Command {
 
     const cfg = await this.client.getGuildConfig(msg.guild!);
     const keyType = guildConfigKeys[args.key];
-    const keyValue: Snowflake[] | string | null = cfg[args.key];
+    const keyValue: Snowflake[] | string | number | null = cfg[args.key];
     args.new_value = args.new_value?.replace(/[\\<>@&#]/g, "");
 
     if (args.function === "show") {
@@ -126,11 +126,12 @@ export class Config extends Command {
       if (Array.isArray(keyValue) && keyValue.length > 0) {
         if (keyType === "channel") desc = keyValue.map((ch) => channelMention(ch)).join(", ");
         if (keyType === "role") desc = keyValue.map((rl) => roleMention(rl)).join(", ");
-        if (keyType === "string") desc = keyValue.map((str) => inlineCode(str)).join(", ");
+        if (keyType === "string" || keyType === "int")
+          desc = keyValue.map((str) => inlineCode(str)).join(", ");
       } else if (!Array.isArray(keyValue) && keyValue) {
-        if (keyType === "channel") desc = channelMention(keyValue);
-        if (keyType === "role") desc = roleMention(keyValue);
-        if (keyType === "string") desc = inlineCode(keyValue);
+        if (keyType === "channel") desc = channelMention(keyValue.toString());
+        if (keyType === "role") desc = roleMention(keyValue.toString());
+        if (keyType === "string" || keyType === "int") desc = inlineCode(keyValue.toString());
       }
 
       return msg.reply({
@@ -154,6 +155,9 @@ export class Config extends Command {
     } else if (keyType === "role") {
       const val = await msg.guild!.roles.fetch(args.new_value!).catch(() => null);
       if (!val) showErrorMsg = true;
+    } else if (keyType === "int") {
+      const val = parseInt(args.new_value!);
+      if (isNaN(val)) showErrorMsg = true;
     }
 
     if (showErrorMsg)

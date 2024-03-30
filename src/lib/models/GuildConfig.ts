@@ -21,6 +21,8 @@ export class GuildConfig extends Model<
   declare joinRoles: CreationOptional<Snowflake[]>;
   declare commandChannels: CreationOptional<Snowflake[]>;
   declare lockdownChannels: CreationOptional<Snowflake[]>;
+  declare automodImmune: CreationOptional<Snowflake[]>;
+  declare infractionThreshold: CreationOptional<number>;
 
   public static initialize(sequelize: Sequelize) {
     GuildConfig.init(
@@ -33,7 +35,9 @@ export class GuildConfig extends Model<
         mutedRole: { type: DataTypes.STRING, allowNull: true, defaultValue: null },
         joinRoles: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [] },
         commandChannels: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [] },
-        lockdownChannels: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [] }
+        lockdownChannels: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [] },
+        automodImmune: { type: DataTypes.ARRAY(DataTypes.STRING), defaultValue: [] },
+        infractionThreshold: { type: DataTypes.INTEGER, defaultValue: 4 }
       },
       { sequelize }
     );
@@ -51,7 +55,9 @@ export const guildConfigKeys: { [key in keyof Omit<typeof _keys, "id">]: string 
   mutedRole: "role",
   joinRoles: "role",
   commandChannels: "channel",
-  lockdownChannels: "channel"
+  lockdownChannels: "channel",
+  automodImmune: "role",
+  infractionThreshold: "int"
 } as const;
-export const arrayTypeKeys = ["joinRoles", "commandChannels", "lockdownChannels"];
+export const arrayTypeKeys = ["joinRoles", "commandChannels", "lockdownChannels", "automodImmune"];
 export type GuildConfigKeys = keyof typeof guildConfigKeys;

@@ -14,7 +14,6 @@ import {
   inlineCode,
   userMention
 } from "discord.js";
-import { Op } from "sequelize";
 
 export class Modlogs extends Command {
   constructor() {
@@ -45,11 +44,13 @@ export class Modlogs extends Command {
     }
   ) {
     const entries = await Punishment.findAll({
+      order: [["createdAt", "ASC"]],
       where: {
-        [Op.and]: [{ guildID: msg.guild!.id }, { victimID: args.user.id }]
-      },
-      order: [["createdAt", "ASC"]]
+        guildID: msg.guild!.id,
+        victimID: args.user.id
+      }
     });
+
     if (entries.length == 0) {
       return msg.reply({
         embeds: [new EmbedBuilder().setColor(colors.info).setDescription("User has no modlogs")]
@@ -58,8 +59,8 @@ export class Modlogs extends Command {
 
     const paginated: Punishment[][] = [];
     let page = 0;
-    for (let i = 0; i < entries.length; i += 5) {
-      paginated.push(entries.splice(i, 5));
+    while (entries.length > 0) {
+      paginated.push(entries.splice(0, 5));
     }
 
     const first = new ButtonBuilder()
@@ -96,11 +97,11 @@ export class Modlogs extends Command {
       /* eslint-disable indent */
       switch (i.customId) {
         case "modlogs-back":
-          if (page === 0) i.deferUpdate();
+          if (page === 0) break;
           else page--;
           break;
         case "modlogs-next":
-          if (page === paginated.length - 1) i.deferUpdate();
+          if (page === paginated.length - 1) break;
           else page++;
           break;
         case "modlogs-first":
@@ -115,7 +116,7 @@ export class Modlogs extends Command {
           break;
       }
       /* eslint-disable indent */
-      i.update({
+      await i.update({
         embeds: [this.getPage(paginated, page)],
         components: [btns]
       });
