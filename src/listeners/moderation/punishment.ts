@@ -11,25 +11,27 @@ export class PunishmentListener extends Listener {
     });
   }
 
-  override async execute(guild: Guild, data: ModerationEventData) {
-    const logsEntry = await Punishment.create({
-      type: data.type,
-      guildID: guild.id,
-      victimID: data.victim.id,
-      modID: data.moderator.id,
-      reason: data.reason,
-      duration: data.duration
-    });
+  override async execute(guild: Guild, data: ModerationEventData, createEntry: boolean = true) {
+    let logsEntry;
+    if (createEntry)
+      logsEntry = await Punishment.create({
+        type: data.type,
+        guildID: guild.id,
+        victimID: data.victim.id,
+        modID: data.moderator.id,
+        reason: data.reason,
+        duration: data.duration
+      });
     const cfg = await this.client.getGuildConfig(guild);
     if (!cfg || !cfg?.moderationLogChannel) return;
     const logChannel = (await guild.channels.fetch(cfg.moderationLogChannel)) as TextChannel;
     if (!logChannel) return;
-    if (!logsEntry) {
+    if (!logsEntry && createEntry) {
       logChannel.send("An error occured while trying to create modlog");
       return;
     }
     logChannel.send({
-      embeds: [modlogEmbed(logsEntry.id, data)],
+      embeds: [modlogEmbed(logsEntry?.id || 0, data)],
       allowedMentions: { parse: [] }
     });
   }

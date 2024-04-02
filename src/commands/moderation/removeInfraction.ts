@@ -14,7 +14,7 @@ import { Op } from "sequelize";
 export class RemoveInfraction extends Command {
   constructor() {
     super("removeinfraction", {
-      description: "Bans a user from the guild",
+      description: "Removes an infraction from a user",
       aliases: ["removeinfraction", "rminf", "rm_inf", "remove_infraction"],
       category: "moderation",
       usage: "removeinfraction <user> <modlogid> [reason]",

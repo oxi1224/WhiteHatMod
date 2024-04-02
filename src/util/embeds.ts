@@ -14,7 +14,7 @@ export function modlogEmbed(logID: number, data: ModerationEventData) {
 
   const fields: EmbedField[] = [
     { name: "Moderator", value: userMention(data.moderator.id), inline: true },
-    { name: "Victim", value: userMention(data.victim.id), inline: true },
+    { name: "Victim", value: data.victim ? userMention(data.victim.id) : "None", inline: true },
     { name: "Case ID", value: logID.toString(), inline: true },
     { name: "Reason", value: inlineCode(data.reason || "N/A"), inline: false }
   ];

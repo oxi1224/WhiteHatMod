@@ -14,7 +14,7 @@ import { Op } from "sequelize";
 export class AddInfraction extends Command {
   constructor() {
     super("addinfraction", {
-      description: "Bans a user from the guild",
+      description: "Adds an infraction to a user",
       aliases: ["addinfraction", "add_infraction", "addinf", "add_inf"],
       category: "moderation",
       usage: "addinfraction <user> <duration> [reason]",

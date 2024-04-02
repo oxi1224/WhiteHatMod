@@ -9,6 +9,7 @@ export * from "./moderation/kick.js";
 export * from "./moderation/lockdown.js";
 export * from "./moderation/modlogs.js";
 export * from "./moderation/mute.js";
+export * from "./moderation/purge.js";
 export * from "./moderation/removeInfraction.js";
 export * from "./moderation/timeout.js";
 export * from "./moderation/unban.js";

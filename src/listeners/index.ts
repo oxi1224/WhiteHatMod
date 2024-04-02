@@ -7,4 +7,4 @@ export * from "./member/guildMemberUpdate.js";
 export * from "./message/messageDelete.js";
 export * from "./message/messageUpdate.js";
 export * from "./moderation/banInvites.js";
-export * from "./punishment.js";
+export * from "./moderation/punishment.js";

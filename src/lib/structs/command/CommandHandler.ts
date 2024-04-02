@@ -221,6 +221,7 @@ export class CommandHandler extends EventEmitter {
       const args = this.parseInteractionArgs(interaction, cmd.arguments);
       const stopExecution = await cmd.preExecute(interaction, args);
       if (stopExecution) return;
+      // await interaction.deferReply();
       cmd.execute(interaction, args);
     }
     return;
