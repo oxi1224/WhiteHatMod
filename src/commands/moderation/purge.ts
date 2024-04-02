@@ -1,9 +1,7 @@
-import { ArgumentTypes, Command, colors } from "#lib";
+import { ActionMessage, ArgumentTypes, Command, colors } from "#lib";
 import {
   ApplicationCommandOptionType,
-  CommandInteraction,
   EmbedBuilder,
-  Message,
   PermissionFlagsBits,
   TextChannel,
   User,
@@ -42,7 +40,7 @@ export class Purge extends Command {
   }
 
   override async execute(
-    msg: Message | CommandInteraction,
+    msg: ActionMessage,
     args: {
       count: number;
       user?: User;

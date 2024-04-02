@@ -1,11 +1,9 @@
-import { ArgumentTypes, Command, FlagTypes, colors } from "#lib";
+import { ActionMessage, ArgumentTypes, Command, FlagTypes, colors } from "#lib";
 import { getPermissionName } from "#util";
 import {
   ApplicationCommandOptionType,
-  CommandInteraction,
   EmbedBuilder,
   EmbedField,
-  Message,
   inlineCode,
   italic
 } from "discord.js";
@@ -32,7 +30,7 @@ export class Help extends Command {
   }
 
   override execute(
-    msg: Message | CommandInteraction,
+    msg: ActionMessage,
     args: {
       command?: string;
     }

@@ -1,6 +1,6 @@
-import { ArgumentTypes, Command, colors } from "#lib";
+import { ActionMessage, ArgumentTypes, Command, colors } from "#lib";
 import { ApplicationCommandOptionType } from "discord-api-types/v10";
-import { CommandInteraction, EmbedBuilder, Message, User } from "discord.js";
+import { EmbedBuilder, User } from "discord.js";
 
 export class Avatar extends Command {
   constructor() {
@@ -24,7 +24,7 @@ export class Avatar extends Command {
   }
 
   public override async execute(
-    msg: Message | CommandInteraction,
+    msg: ActionMessage,
     args: {
       user?: User;
     }

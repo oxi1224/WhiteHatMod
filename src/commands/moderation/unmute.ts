@@ -1,10 +1,8 @@
-import { ArgumentTypes, Command, resEmbed } from "#lib";
+import { ActionMessage, ArgumentTypes, Command, resEmbed } from "#lib";
 import {
   ApplicationCommandOptionType,
-  CommandInteraction,
   GuildMember,
   GuildMemberResolvable,
-  Message,
   PermissionFlagsBits
 } from "discord.js";
 
@@ -39,7 +37,7 @@ export class Unmute extends Command {
   }
 
   override async execute(
-    msg: Message | CommandInteraction,
+    msg: ActionMessage,
     args: {
       member: GuildMember;
       reason?: string;

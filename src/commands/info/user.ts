@@ -1,13 +1,6 @@
-import { ArgumentTypes, Command, colors } from "#lib";
+import { ActionMessage, ArgumentTypes, Command, colors } from "#lib";
 import { ApplicationCommandOptionType } from "discord-api-types/v10";
-import {
-  CommandInteraction,
-  EmbedBuilder,
-  EmbedField,
-  GuildMember,
-  Message,
-  User
-} from "discord.js";
+import { EmbedBuilder, EmbedField, GuildMember, User } from "discord.js";
 import humanizeDuration from "humanize-duration";
 
 export class UserCommand extends Command {
@@ -32,7 +25,7 @@ export class UserCommand extends Command {
   }
 
   public override async execute(
-    msg: Message | CommandInteraction,
+    msg: ActionMessage,
     args: {
       user?: User;
     }

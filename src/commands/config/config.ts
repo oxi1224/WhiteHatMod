@@ -1,4 +1,5 @@
 import {
+  ActionMessage,
   ArgumentTypes,
   Command,
   GuildConfigKeys,
@@ -8,9 +9,7 @@ import {
 } from "#lib";
 import { ApplicationCommandOptionType } from "discord-api-types/v10";
 import {
-  CommandInteraction,
   EmbedBuilder,
-  Message,
   PermissionFlagsBits,
   Snowflake,
   channelMention,
@@ -71,7 +70,7 @@ export class Config extends Command {
   }
 
   public override async execute(
-    msg: Message | CommandInteraction,
+    msg: ActionMessage,
     args: {
       function: "set" | "clear" | "show" | "add" | "remove";
       key: GuildConfigKeys;

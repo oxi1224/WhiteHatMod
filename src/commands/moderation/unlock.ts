@@ -1,10 +1,8 @@
-import { ArgumentTypes, Command, colors, emotes } from "#lib";
+import { ActionMessage, ArgumentTypes, Command, colors, emotes } from "#lib";
 import {
   ApplicationCommandOptionType,
-  CommandInteraction,
   EmbedBuilder,
   GuildChannel,
-  Message,
   PermissionFlagsBits,
   TextChannel,
   User,
@@ -45,7 +43,7 @@ export class Unlockdown extends Command {
   }
 
   override async execute(
-    msg: Message | CommandInteraction,
+    msg: ActionMessage,
     args: {
       channel?: GuildChannel;
       reason?: string;

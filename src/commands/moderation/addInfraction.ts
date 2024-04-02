@@ -1,9 +1,7 @@
-import { ArgumentTypes, Command, Punishment, TimeInMs, colors } from "#lib";
+import { ActionMessage, ArgumentTypes, Command, Punishment, TimeInMs, colors } from "#lib";
 import {
   ApplicationCommandOptionType,
-  CommandInteraction,
   EmbedBuilder,
-  Message,
   PermissionFlagsBits,
   User,
   inlineCode,
@@ -49,7 +47,7 @@ export class AddInfraction extends Command {
   }
 
   public override async execute(
-    msg: Message | CommandInteraction,
+    msg: ActionMessage,
     args: {
       user: User;
       duration: number;

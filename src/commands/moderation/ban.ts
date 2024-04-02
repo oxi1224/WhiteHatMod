@@ -1,9 +1,7 @@
-import { ArgumentTypes, Command, FlagTypes, resEmbed } from "#lib";
+import { ActionMessage, ArgumentTypes, Command, FlagTypes, resEmbed } from "#lib";
 import {
   ApplicationCommandOptionType,
-  CommandInteraction,
   GuildMemberResolvable,
-  Message,
   PermissionFlagsBits,
   User
 } from "discord.js";
@@ -54,7 +52,7 @@ export class Ban extends Command {
   }
 
   override async execute(
-    msg: Message | CommandInteraction,
+    msg: ActionMessage,
     args: {
       user: User;
       duration?: number;

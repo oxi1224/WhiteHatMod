@@ -1,14 +1,12 @@
-import { ArgumentTypes, Command, Punishment, TimeInMs, colors, emotes } from "#lib";
+import { ActionMessage, ArgumentTypes, Command, Punishment, TimeInMs, colors, emotes } from "#lib";
 import { msToTime, timeUnix } from "#util";
 import {
   ActionRowBuilder,
   ApplicationCommandOptionType,
   ButtonBuilder,
   ButtonStyle,
-  CommandInteraction,
   ComponentEmojiResolvable,
   EmbedBuilder,
-  Message,
   PermissionFlagsBits,
   User,
   inlineCode,
@@ -38,7 +36,7 @@ export class Modlogs extends Command {
   }
 
   override async execute(
-    msg: Message | CommandInteraction,
+    msg: ActionMessage,
     args: {
       user: User;
     }

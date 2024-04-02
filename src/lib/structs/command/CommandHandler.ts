@@ -16,6 +16,7 @@ import "dotenv/config";
 import { EventEmitter } from "events";
 import { ArgumentTypes, FlagTypes, colors, emotes } from "../../constants.js";
 import { ArgTypes, Argument, ClassConstructor, ParsedArgs } from "../../types.js";
+import { ActionMessage } from "../ActionMessage.js";
 import { Client } from "../Client.js";
 import { Command } from "./Command.js";
 
@@ -190,7 +191,7 @@ export class CommandHandler extends EventEmitter {
       );
       const stopExecution = await commandObject.preExecute(msg, args);
       if (stopExecution) return;
-      commandObject.execute(msg, args);
+      commandObject.execute(new ActionMessage(msg), args);
     }
     return;
   }
@@ -221,8 +222,10 @@ export class CommandHandler extends EventEmitter {
       const args = this.parseInteractionArgs(interaction, cmd.arguments);
       const stopExecution = await cmd.preExecute(interaction, args);
       if (stopExecution) return;
-      // await interaction.deferReply();
-      cmd.execute(interaction, args);
+
+      const actionMsg = new ActionMessage(interaction);
+      await actionMsg.deferReply();
+      cmd.execute(actionMsg, args);
     }
     return;
   }

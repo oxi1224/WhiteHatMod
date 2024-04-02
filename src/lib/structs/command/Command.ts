@@ -8,6 +8,7 @@ import {
   inlineCode
 } from "discord.js";
 import { Argument, ParsedArgs } from "../../types.js";
+import { ActionMessage } from "../ActionMessage.js";
 import { Client as ClientClass } from "../Client.js";
 
 export interface CommandOptions {
@@ -95,7 +96,7 @@ export abstract class Command {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public execute(msg: Message | CommandInteraction, args: ParsedArgs) {
+  public execute(msg: ActionMessage, args: ParsedArgs) {
     throw new Error("Execute must be overriden. Command ID: " + this.id);
   }
 

@@ -1,9 +1,7 @@
-import { ArgumentTypes, Command, resEmbed } from "#lib";
+import { ActionMessage, ArgumentTypes, Command, resEmbed } from "#lib";
 import {
   ApplicationCommandOptionType,
-  CommandInteraction,
   GuildMemberResolvable,
-  Message,
   PermissionFlagsBits,
   User
 } from "discord.js";
@@ -39,7 +37,7 @@ export class Unban extends Command {
   }
 
   override async execute(
-    msg: Message | CommandInteraction,
+    msg: ActionMessage,
     args: {
       user: User;
       reason?: string;

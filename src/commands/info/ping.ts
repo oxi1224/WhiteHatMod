@@ -1,5 +1,5 @@
-import { Command } from "#lib";
-import { CommandInteraction, EmbedBuilder, Message } from "discord.js";
+import { ActionMessage, Command, colors } from "#lib";
+import { EmbedBuilder } from "discord.js";
 
 export class Ping extends Command {
   constructor() {
@@ -14,13 +14,15 @@ export class Ping extends Command {
     });
   }
 
-  override execute(msg: Message | CommandInteraction) {
+  override execute(msg: ActionMessage) {
     const timeDifferece = new Date().getTime() - msg.createdTimestamp;
     const apiPing = msg.client.ws.ping;
-    const embed = new EmbedBuilder().addFields([
-      { name: "Bot latency", value: `\`\`${Math.round(timeDifferece)}ms\`\``, inline: true },
-      { name: "Api latency", value: `\`\`${Math.round(apiPing)}ms\`\``, inline: true }
-    ]);
+    const embed = new EmbedBuilder()
+      .addFields([
+        { name: "Bot latency", value: `\`\`${Math.round(timeDifferece)}ms\`\``, inline: true },
+        { name: "Api latency", value: `\`\`${Math.round(apiPing)}ms\`\``, inline: true }
+      ])
+      .setColor(colors.base);
     msg.reply({ embeds: [embed] });
   }
 }
